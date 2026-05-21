@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>EPSA IPC Training Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #05080f;
+  --surface: #0d1220;
+  --surface2: #141928;
+  --border: #1e2840;
+  --text: #eef0f6;
+  --muted: #8892aa;
+  --dim: #3d4760;
+  --m1: #38bdf8;
+  --m2: #34d399;
+  --warn: #fbbf24;
+  --danger: #f87171;
+  --ok: #34d399;
+  --risk: #fbbf24;
+  --lag: #f87171;
+  --na: #4b5563;
+  --accent: #6366f1;
+  --font: 'Plus Jakarta Sans', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
+
+/* HEADER */
+.header { padding: 20px 16px 0; background: linear-gradient(180deg, #0a0e1a 0%, transparent 100%); }
+.header-top { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.badge { font-size: 10px; letter-spacing: 2.5px; color: var(--m1); font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
+h1 { font-size: clamp(18px, 5vw, 26px); font-weight: 900; color: #fff; line-height: 1.1; }
+.subtitle { font-size: 12px; color: var(--muted); margin-top: 5px; }
+.deadline-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { background: var(--surface); border-radius: 10px; padding: 9px 13px; font-size: 12px; border: 1px solid var(--border); }
+.chip-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; }
+.chip.m1 .chip-label { color: var(--m1); }
+.chip.m2 .chip-label { color: var(--m2); }
+.chip-period { font-weight: 700; color: var(--text); }
+.chip-note { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* KPI ROW */
+.kpi-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 16px; }
+@media(min-width: 640px) { .kpi-row { grid-template-columns: repeat(4, 1fr); } }
+.kpi { background: var(--surface); border-radius: 14px; padding: 14px; border: 1px solid var(--border); }
+.kpi-val { font-size: clamp(22px, 6vw, 32px); font-weight: 900; line-height: 1; margin-bottom: 4px; }
+.kpi-label { font-size: 12px; font-weight: 700; color: var(--text); }
+.kpi-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.kpi-note { font-size: 11px; margin-top: 6px; font-weight: 600; }
+.ring-wrap { display: flex; align-items: center; gap: 12px; }
+
+/* FILTERS */
+.filters { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 12px; }
+.filter-group { background: var(--surface); border-radius: 14px; padding: 14px; border: 1px solid var(--border); }
+.filter-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 10px; }
+.pill-row { display: flex; flex-wrap: wrap; gap: 7px; }
+.pill { padding: 7px 13px; border-radius: 99px; border: none; cursor: pointer; font-size: 12px; font-weight: 700; font-family: var(--font); background: var(--surface2); color: var(--muted); transition: all 0.2s; -webkit-tap-highlight-color: transparent; }
+.pill.active-m1 { background: #0c2d3f; color: var(--m1); outline: 1.5px solid var(--m1); }
+.pill.active-m2 { background: #0b2d21; color: var(--m2); outline: 1.5px solid var(--m2); }
+.pill.active-all { background: var(--surface2); color: var(--text); outline: 1.5px solid var(--dim); }
+select { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 10px; padding: 9px 12px; font-size: 13px; font-family: var(--font); cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238892aa' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+.sort-hint { font-size: 11px; color: var(--muted); margin-top: 8px; }
+.jawatan-warn { font-size: 11px; color: var(--warn); margin-top: 7px; }
+
+/* DEPT GRID */
+.grid { display: grid; grid-template-columns: 1fr; gap: 10px; padding: 0 16px 24px; }
+@media(min-width: 600px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media(min-width: 1000px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media(min-width: 1400px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+
+.card { background: var(--surface); border-radius: 16px; padding: 16px; border: 1px solid var(--border); transition: border-color 0.2s; animation: fadeUp 0.4s ease both; }
+.card:hover { border-color: var(--dim); }
+@keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: none; } }
+
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.dept-name { font-weight: 800; font-size: 14px; color: #fff; line-height: 1.2; }
+.dept-key { font-size: 10px; color: var(--dim); margin-top: 2px; letter-spacing: 0.5px; }
+.status-pill { font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 99px; white-space: nowrap; }
+.s-ok   { background: #052318; color: var(--ok); }
+.s-risk { background: #2b1d05; color: var(--risk); }
+.s-lag  { background: #2a0808; color: var(--lag); }
+.s-na   { background: #111827; color: var(--na); }
+
+.mod-row { margin-bottom: 11px; }
+.mod-row:last-child { margin-bottom: 0; }
+.mod-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+.mod-left { display: flex; align-items: center; gap: 6px; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.mod-name { font-size: 11px; color: var(--muted); font-weight: 600; }
+.mod-right { display: flex; align-items: center; gap: 8px; }
+.mod-count { font-size: 11px; color: var(--dim); }
+.mod-pct { font-size: 13px; font-weight: 900; min-width: 38px; text-align: right; }
+.bar-track { background: var(--surface2); border-radius: 99px; height: 8px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 99px; transition: width 1s cubic-bezier(.4,0,.2,1); }
+.denom-warn { font-size: 10px; color: var(--warn); margin-top: 4px; }
+.jawatan-result { margin-top: 10px; background: var(--surface2); border-radius: 8px; padding: 8px 10px; font-size: 11px; color: var(--muted); }
+.jawatan-result strong { color: var(--text); }
+
+/* LEGEND */
+.legend { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; padding: 14px 16px 30px; border-top: 1px solid var(--border); margin-top: 4px; }
+.legend-label { font-size: 10px; font-weight: 700; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.legend-src { margin-left: auto; font-size: 10px; color: var(--dim); }
+
+/* SUMMARY BAR (mobile sticky bottom) */
+.summary-bar { display: none; }
+@media(max-width: 599px) {
+  .summary-bar { display: flex; position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); padding: 10px 16px; gap: 0; z-index: 100; }
+  .sum-item { flex: 1; text-align: center; }
+  .sum-val { font-size: 16px; font-weight: 900; }
+  .sum-lbl { font-size: 9px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  body { padding-bottom: 70px; }
+}
+
+/* NO RESULTS */
+.empty { grid-column: 1/-1; text-align: center; padding: 48px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="badge">IPC Compliance · EPSA</div>
+      <h1>Module Training Status</h1>
+      <div class="subtitle" id="last-updated">19 Departments · As of 21 May 2026</div>
+    </div>
+    <div class="deadline-chips">
+      <div class="chip m1">
+        <div class="chip-label">Modul 1 Target</div>
+        <div class="chip-period">Jan – Mar 2026</div>
+        <div class="chip-note">⏱ Period closed</div>
+      </div>
+      <div class="chip m2">
+        <div class="chip-label">Modul 2 Target</div>
+        <div class="chip-period">Apr – Jun 2026</div>
+        <div class="chip-note">⚡ 40 days left</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- KPI Row -->
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="ring-wrap">
+      <svg width="52" height="52" viewBox="0 0 52 52">
+        <circle cx="26" cy="26" r="20" fill="none" stroke="#1e2840" stroke-width="6"/>
+        <circle cx="26" cy="26" r="20" fill="none" stroke="#38bdf8" stroke-width="6"
+          stroke-dasharray="125.7" stroke-dashoffset="0"
+          id="ring-m1" stroke-linecap="round" transform="rotate(-90 26 26)" style="transition:stroke-dashoffset 1s ease"/>
+      </svg>
+      <div>
+        <div class="kpi-val" id="kpi-m1-pct" style="color:var(--m1)">—</div>
+        <div class="kpi-label">Modul 1 Overall</div>
+        <div class="kpi-sub" id="kpi-m1-sub">Calculating…</div>
+      </div>
+    </div>
+  </div>
+  <div class="kpi">
+    <div class="ring-wrap">
+      <svg width="52" height="52" viewBox="0 0 52 52">
+        <circle cx="26" cy="26" r="20" fill="none" stroke="#1e2840" stroke-width="6"/>
+        <circle cx="26" cy="26" r="20" fill="none" stroke="#34d399" stroke-width="6"
+          stroke-dasharray="125.7" stroke-dashoffset="0"
+          id="ring-m2" stroke-linecap="round" transform="rotate(-90 26 26)" style="transition:stroke-dashoffset 1s ease"/>
+      </svg>
+      <div>
+        <div class="kpi-val" id="kpi-m2-pct" style="color:var(--m2)">—</div>
+        <div class="kpi-label">Modul 2 Overall</div>
+        <div class="kpi-sub" id="kpi-m2-sub">Calculating…</div>
+      </div>
+    </div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-val" style="color:var(--ok)" id="kpi-ontarget">—</div>
+    <div class="kpi-label">Depts On Track</div>
+    <div class="kpi-sub">≥ 80% completion</div>
+    <div class="kpi-note" style="color:var(--ok)" id="kpi-ontarget-note"></div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-val" style="color:var(--warn)">2</div>
+    <div class="kpi-label">Missing Denominator</div>
+    <div class="kpi-sub">Medical, Pengurusan</div>
+    <div class="kpi-note" style="color:var(--warn)">Pending HOD data ⚠</div>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="filters">
+  <div class="filter-group">
+    <div class="filter-label">Module</div>
+    <div class="pill-row" id="module-pills">
+      <button class="pill active-all" onclick="setModule('all')">All Modules</button>
+      <button class="pill" onclick="setModule(1)">Modul 1 · Jan–Mar</button>
+      <button class="pill" onclick="setModule(2)">Modul 2 · Apr–Jun</button>
+    </div>
+  </div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+    <div class="filter-group">
+      <div class="filter-label">Department</div>
+      <select id="dept-select" onchange="render()">
+        <option value="ALL">All Departments</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <div class="filter-label">Jawatan (Role)</div>
+      <select id="jawatan-select" onchange="render()">
+        <option value="ALL">All Roles</option>
+      </select>
+      <div class="jawatan-warn" id="jawatan-warn" style="display:none">⚠ Jawatan filter: Modul 1 data only</div>
+    </div>
+  </div>
+  <div class="filter-group" style="padding:10px 14px;">
+    <div class="filter-label" style="margin-bottom:6px;">Sort By</div>
+    <div class="pill-row">
+      <button class="pill active-all" onclick="setSort('name')">Name</button>
+      <button class="pill" onclick="setSort('pct')">% Complete</button>
+      <button class="pill" onclick="setSort('submitted')">Submitted</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cards Grid -->
+<div class="grid" id="card-grid"></div>
+
+<!-- Legend -->
+<div class="legend">
+  <span class="legend-label">Status:</span>
+  <span class="legend-item"><span class="legend-dot" style="background:var(--ok)"></span>On Track (≥80%)</span>
+  <span class="legend-item"><span class="legend-dot" style="background:var(--risk)"></span>At Risk (50–79%)</span>
+  <span class="legend-item"><span class="legend-dot" style="background:var(--lag)"></span>Lagging (&lt;50%)</span>
+  <span class="legend-item"><span class="legend-dot" style="background:var(--na)"></span>No Data</span>
+  <span class="legend-src">Source: EPSA Google Form · Pivot Table 4</span>
+</div>
+
+<!-- Mobile sticky summary bar -->
+<div class="summary-bar">
+  <div class="sum-item"><div class="sum-val" style="color:var(--m1)" id="mob-m1">—</div><div class="sum-lbl">Modul 1</div></div>
+  <div class="sum-item" style="border-left:1px solid var(--border);border-right:1px solid var(--border)">
+    <div class="sum-val" style="color:var(--m2)" id="mob-m2">—</div><div class="sum-lbl">Modul 2</div>
+  </div>
+  <div class="sum-item"><div class="sum-val" style="color:var(--ok)" id="mob-on">—</div><div class="sum-lbl">On Track</div></div>
+</div>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────────────
+const DEPTS = {
+  "ANAEST":                  { name:"Anaesthesiology",        m1:40,  m1d:198, m2:15,  m2d:198 },
+  "DIETETIK":                { name:"Dietetics",              m1:27,  m1d:27,  m2:18,  m2d:27  },
+  "FARMASI":                 { name:"Pharmacy",               m1:106, m1d:114, m2:80,  m2d:114 },
+  "FISIOTERAPI":             { name:"Physiotherapy",          m1:10,  m1d:18,  m2:7,   m2d:18  },
+  "FORENSIC":                { name:"Forensic",               m1:13,  m1d:13,  m2:10,  m2d:13  },
+  "KECEMASAN":               { name:"Emergency",              m1:10,  m1d:213, m2:8,   m2d:213 },
+  "MEDICAL":                 { name:"Medical",                m1:36,  m1d:null,m2:25,  m2d:null},
+  "O&G":                     { name:"Obstetrics & Gynae",     m1:145, m1d:213, m2:95,  m2d:213 },
+  "OMFS":                    { name:"Oral & Maxillofacial",  m1:17,  m1d:25,  m2:10,  m2d:25  },
+  "ORTOPEDIK":               { name:"Orthopaedics",           m1:5,   m1d:50,  m2:3,   m2d:50  },
+  "PATHOLOGY":               { name:"Pathology",              m1:64,  m1d:89,  m2:40,  m2d:89  },
+  "PEDIATRIK":               { name:"Paediatrics",            m1:169, m1d:251, m2:110, m2d:251 },
+  "PEMBEDAHAN":              { name:"Surgery",                m1:4,   m1d:120, m2:3,   m2d:120 },
+  "PENGURUSAN":              { name:"Administration",         m1:7,   m1d:null,m2:3,   m2d:null},
+  "PERGIGIAN PEDIATRIK":     { name:"Paediatric Dentistry",  m1:18,  m1d:28,  m2:12,  m2d:28  },
+  "PSIKIATRI":               { name:"Psychiatry",             m1:12,  m1d:61,  m2:9,   m2d:61  },
+  "RADIOLOGI":               { name:"Radiology",              m1:6,   m1d:59,  m2:4,   m2d:59  },
+  "SPECIAL CARE DENTISTRY":  { name:"Special Care Dentistry",m1:3,   m1d:14,  m2:2,   m2d:14  },
+  "TERAPI CARA KERJA":       { name:"Occupational Therapy",  m1:17,  m1d:21,  m2:12,  m2d:21  },
+};
+
+const JAWATAN_M1 = {
+  "DOKTOR":                           {ANAEST:18,FORENSIC:10,KECEMASAN:8,MEDICAL:14,"O&G":17,OMFS:7,ORTOPEDIK:3,PATHOLOGY:22,PEDIATRIK:41,PEMBEDAHAN:1,PENGURUSAN:3,"PERGIGIAN PEDIATRIK":6,PSIKIATRI:5,RADIOLOGI:5,"SPECIAL CARE DENTISTRY":1},
+  "JURU XRAY":                        {RADIOLOGI:1},
+  "JURUPULIH CARAKERJA":              {"TERAPI CARA KERJA":16},
+  "JURUPULIH FISIOTERAPI":            {FISIOTERAPI:9},
+  "JURURAWAT":                        {ANAEST:16,FARMASI:1,KECEMASAN:2,MEDICAL:20,"O&G":118,OMFS:2,ORTOPEDIK:2,PEDIATRIK:115,PEMBEDAHAN:2,PENGURUSAN:3,"PERGIGIAN PEDIATRIK":1,PSIKIATRI:6},
+  "JURUTEKNOLOGI MAKMAL PERUBATAN":   {PATHOLOGY:29},
+  "JURUTEKNOLOGI PERGIGIAN":          {OMFS:1,"PERGIGIAN PEDIATRIK":2},
+  "JURUTERAPI PERGIGIAN":             {"PERGIGIAN PEDIATRIK":1},
+  "LAIN-LAIN":                        {ANAEST:7,DIETETIK:1,PENGURUSAN:1},
+  "PEGAWAI DIETETIK":                 {DIETETIK:9},
+  "PEGAWAI FARMASI":                  {FARMASI:102},
+  "PEGAWAI PENYEDIAAN MAKANAN":       {DIETETIK:9},
+  "PEGAWAI PSIKOLOGI KLINIKAL":       {PSIKIATRI:1},
+  "PEGAWAI SAINS":                    {PATHOLOGY:10},
+  "PEMBANTU PEMBEDAHAN PERGIGIAN":    {OMFS:6,"PERGIGIAN PEDIATRIK":8,"SPECIAL CARE DENTISTRY":2},
+  "PEMBANTU PENYEDIAAN MAKANAN":      {DIETETIK:8},
+  "PEMBANTU PERAWATAN PESAKIT":       {ANAEST:6,FISIOTERAPI:1,KECEMASAN:3,MEDICAL:2,"O&G":10,OMFS:1,PATHOLOGY:3,PEDIATRIK:13,PEMBEDAHAN:1,"TERAPI CARA KERJA":1},
+  "PENOLONG PEGAWAI FARMASI":         {FARMASI:3},
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let activeModule = 'all';
+let activeSort = 'name';
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+function init() {
+  // Populate dept select
+  const ds = document.getElementById('dept-select');
+  Object.keys(DEPTS).sort((a,b)=>DEPTS[a].name.localeCompare(DEPTS[b].name)).forEach(k=>{
+    ds.innerHTML += `<option value="${k}">${DEPTS[k].name}</option>`;
+  });
+  // Populate jawatan select
+  const js = document.getElementById('jawatan-select');
+  Object.keys(JAWATAN_M1).sort().forEach(j=>{
+    js.innerHTML += `<option value="${j}">${j}</option>`;
+  });
+  updateKPIs();
+  render();
+  // Animate rings after brief delay
+  setTimeout(animateRings, 300);
+}
+
+function pct(n, d) {
+  if (!d || d === 0 || n === null || n === undefined) return null;
+  return Math.round(n / d * 1000) / 10;
+}
+
+function statusClass(p) {
+  if (p === null) return 's-na';
+  if (p >= 80) return 's-ok';
+  if (p >= 50) return 's-risk';
+  return 's-lag';
+}
+function statusText(p) {
+  if (p === null) return 'N/A';
+  if (p >= 80) return 'On Track';
+  if (p >= 50) return 'At Risk';
+  return 'Lagging';
+}
+function barColor(p) {
+  if (p === null) return 'var(--dim)';
+  if (p >= 80) return 'var(--ok)';
+  if (p >= 50) return 'var(--risk)';
+  return 'var(--lag)';
+}
+
+function updateKPIs() {
+  const valid1 = Object.keys(DEPTS).filter(k=>DEPTS[k].m1d!==null);
+  const valid2 = Object.keys(DEPTS).filter(k=>DEPTS[k].m2d!==null);
+  const s1 = valid1.reduce((a,k)=>a+DEPTS[k].m1,0);
+  const d1 = valid1.reduce((a,k)=>a+DEPTS[k].m1d,0);
+  const s2 = valid2.reduce((a,k)=>a+DEPTS[k].m2,0);
+  const d2 = valid2.reduce((a,k)=>a+DEPTS[k].m2d,0);
+  const p1 = pct(s1,d1), p2 = pct(s2,d2);
+  const on1 = valid1.filter(k=>pct(DEPTS[k].m1,DEPTS[k].m1d)>=80).length;
+  const on2 = valid2.filter(k=>pct(DEPTS[k].m2,DEPTS[k].m2d)>=80).length;
+  document.getElementById('kpi-m1-pct').textContent = p1!==null ? p1+'%' : '—';
+  document.getElementById('kpi-m1-sub').textContent = `${s1} / ${d1} staff`;
+  document.getElementById('kpi-m2-pct').textContent = p2!==null ? p2+'%' : '—';
+  document.getElementById('kpi-m2-sub').textContent = `${s2} / ${d2} staff`;
+  document.getElementById('kpi-ontarget').textContent = on1+on2;
+  document.getElementById('kpi-ontarget-note').textContent = `M1: ${on1} · M2: ${on2} depts`;
+  document.getElementById('mob-m1').textContent = p1!==null ? p1+'%':'—';
+  document.getElementById('mob-m2').textContent = p2!==null ? p2+'%':'—';
+  document.getElementById('mob-on').textContent = on1+on2;
+  // store for ring animation
+  window._kpip1 = p1; window._kpip2 = p2;
+}
+
+function animateRings() {
+  const circ = 125.7;
+  const r1 = document.getElementById('ring-m1');
+  const r2 = document.getElementById('ring-m2');
+  if (r1 && window._kpip1!=null) r1.style.strokeDashoffset = circ - (window._kpip1/100)*circ;
+  if (r2 && window._kpip2!=null) r2.style.strokeDashoffset = circ - (window._kpip2/100)*circ;
+}
+
+function setModule(m) {
+  activeModule = m;
+  document.querySelectorAll('#module-pills .pill').forEach((btn,i)=>{
+    btn.className = 'pill';
+    if ((m==='all'&&i===0)||(m===1&&i===1)||(m===2&&i===2)){
+      btn.className = 'pill '+(m==='all'?'active-all':m===1?'active-m1':'active-m2');
+    }
+  });
+  render();
+}
+
+function setSort(s) {
+  activeSort = s;
+  document.querySelectorAll('.filter-group:last-child .pill').forEach((btn,i)=>{
+    btn.className = 'pill';
+    if((s==='name'&&i===0)||(s==='pct'&&i===1)||(s==='submitted'&&i===2)) btn.className='pill active-all';
+  });
+  render();
+}
+
+function render() {
+  const deptFilter = document.getElementById('dept-select').value;
+  const jawatanFilter = document.getElementById('jawatan-select').value;
+  document.getElementById('jawatan-warn').style.display = jawatanFilter!=='ALL'?'block':'none';
+
+  let keys = deptFilter==='ALL' ? Object.keys(DEPTS) : [deptFilter];
+
+  // Build rows
+  let rows = keys.map(key=>{
+    const d = DEPTS[key];
+    let m1s=d.m1, m1d=d.m1d, m2s=d.m2, m2d=d.m2d;
+    let jawatanCount = null;
+    if (jawatanFilter!=='ALL') {
+      const jmap = JAWATAN_M1[jawatanFilter]||{};
+      jawatanCount = jmap[key]||0;
+      m1s = jawatanCount; m1d=null; m2s=null; m2d=null;
+    }
+    return { key, ...d, m1s, m1d, m2s, m2d, jawatanCount,
+      m1p: pct(m1s,m1d), m2p: pct(m2s,m2d) };
+  });
+
+  // Sort
+  rows.sort((a,b)=>{
+    if(activeSort==='name') return a.name.localeCompare(b.name);
+    if(activeSort==='pct'){
+      const ap = activeModule===2?a.m2p:a.m1p, bp = activeModule===2?b.m2p:b.m1p;
+      if(ap===null&&bp===null)return 0; if(ap===null)return 1; if(bp===null)return -1;
+      return bp-ap;
+    }
+    if(activeSort==='submitted'){
+      const av=activeModule===2?a.m2s:(a.m1s+(a.m2s||0));
+      const bv=activeModule===2?b.m2s:(b.m1s+(b.m2s||0));
+      return bv-av;
+    }
+  });
+
+  const grid = document.getElementById('card-grid');
+  if(rows.length===0){ grid.innerHTML='<div class="empty">No results found.</div>'; return; }
+
+  grid.innerHTML = rows.map((r,idx)=>{
+    const primP = activeModule===2 ? r.m2p : r.m1p;
+    const sc = statusClass(primP);
+    const delay = Math.min(idx*40,400);
+
+    const showM1 = activeModule!==2;
+    const showM2 = activeModule!==1;
+
+    const modRow = (label, period, color, cssvar, sub, num, den, pp, hasMissing) => {
+      const bColor = barColor(pp);
+      const w = pp!==null ? Math.min(pp,100)+'%' : '0%';
+      const pctStr = pp!==null ? pp+'%' : '—';
+      const countStr = den ? `${num} / ${den}` : `${num!=null?num:'—'} submitted`;
+      return `
+        <div class="mod-row">
+          <div class="mod-meta">
+            <div class="mod-left">
+              <div class="dot" style="background:${color}"></div>
+              <span class="mod-name">${label} · ${period}</span>
+            </div>
+            <div class="mod-right">
+              <span class="mod-count">${countStr}</span>
+              <span class="mod-pct" style="color:${bColor}">${pctStr}</span>
+            </div>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${w};background:${bColor}"></div>
+          </div>
+          ${hasMissing?'<div class="denom-warn">⚠ Denominator pending from HOD</div>':''}
+        </div>`;
+    };
+
+    const jawHtml = r.jawatanCount!==null ? `
+      <div class="jawatan-result">
+        ${document.getElementById('jawatan-select').value}: <strong>${r.jawatanCount} completed Modul 1</strong>
+      </div>` : '';
+
+    return `
+      <div class="card" style="animation-delay:${delay}ms">
+        <div class="card-header">
+          <div>
+            <div class="dept-name">${r.name}</div>
+            <div class="dept-key">${r.key}</div>
+          </div>
+          <span class="status-pill ${sc}">${statusText(primP)}</span>
+        </div>
+        ${showM1 ? modRow('Modul 1','Jan–Mar','var(--m1)','--m1',r.m1s+'',r.m1s,r.m1d,r.m1p,!r.m1d&&r.m1d!==27) : ''}
+        ${showM2 ? modRow('Modul 2','Apr–Jun','var(--m2)','--m2',r.m2s!=null?r.m2s+'':'—',r.m2s,r.m2d,r.m2p,!r.m2d&&r.m2d!==27) : ''}
+        ${jawHtml}
+      </div>`;
+  }).join('');
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

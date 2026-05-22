@@ -6,12 +6,7 @@
 <title>EPSA IPC Training Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#05080f;--surface:#0d1220;--surface2:#141928;--border:#1e2840;
-  --text:#eef0f6;--muted:#8892aa;--dim:#3d4760;
-  --m1:#38bdf8;--m2:#34d399;--warn:#fbbf24;--ok:#34d399;--risk:#fbbf24;--lag:#f87171;--na:#4b5563;
-  --font:'Plus Jakarta Sans',sans-serif;
-}
+:root{--bg:#05080f;--surface:#0d1220;--surface2:#141928;--border:#1e2840;--text:#eef0f6;--muted:#8892aa;--dim:#3d4760;--m1:#38bdf8;--m2:#34d399;--warn:#fbbf24;--ok:#34d399;--risk:#fbbf24;--lag:#f87171;--na:#4b5563;--font:'Plus Jakarta Sans',sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh}
 .header{padding:20px 16px 0}
@@ -25,13 +20,9 @@ h1{font-size:clamp(18px,5vw,26px);font-weight:900;color:#fff;line-height:1.1}
 .chip.m1 .chip-label{color:var(--m1)}.chip.m2 .chip-label{color:var(--m2)}
 .chip-period{font-weight:700;color:var(--text)}.chip-note{font-size:11px;color:var(--muted);margin-top:2px}
 .loader-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:16px}
-.spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--m1);border-radius:50%;animation:spin 0.8s linear infinite}
+.spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--m1);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loader-text{color:var(--muted);font-size:14px;font-weight:600}
-.error-box{background:#1a0808;border:1px solid #f8717133;border-radius:14px;padding:24px;margin:20px;text-align:center}
-.error-box h3{color:var(--lag);margin-bottom:10px;font-size:16px}
-.error-box p{color:var(--muted);font-size:13px;line-height:1.8}
-.error-box a{color:var(--m1)}
 .kpi-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:16px}
 @media(min-width:640px){.kpi-row{grid-template-columns:repeat(4,1fr)}}
 .kpi{background:var(--surface);border-radius:14px;padding:14px;border:1px solid var(--border)}
@@ -43,21 +34,21 @@ h1{font-size:clamp(18px,5vw,26px);font-weight:900;color:#fff;line-height:1.1}
 .filter-group{background:var(--surface);border-radius:14px;padding:14px;border:1px solid var(--border)}
 .filter-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:10px}
 .pill-row{display:flex;flex-wrap:wrap;gap:7px}
-.pill{padding:7px 13px;border-radius:99px;border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:var(--font);background:var(--surface2);color:var(--muted);transition:all 0.2s;-webkit-tap-highlight-color:transparent}
+.pill{padding:7px 13px;border-radius:99px;border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:var(--font);background:var(--surface2);color:var(--muted);transition:all .2s;-webkit-tap-highlight-color:transparent}
 .pill.active-m1{background:#0c2d3f;color:var(--m1);outline:1.5px solid var(--m1)}
 .pill.active-m2{background:#0b2d21;color:var(--m2);outline:1.5px solid var(--m2)}
 .pill.active-all{background:var(--surface2);color:var(--text);outline:1.5px solid var(--dim)}
 select{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:9px 12px;font-size:13px;font-family:var(--font);cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238892aa' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
 .jawatan-warn{font-size:11px;color:var(--warn);margin-top:7px}
-.refresh-btn{display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;font-family:var(--font);cursor:pointer;transition:all 0.2s}
+.refresh-btn{display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;font-family:var(--font);cursor:pointer;transition:all .2s}
 .refresh-btn:hover{color:var(--m1);border-color:var(--m1)}
-.refresh-icon{font-size:14px;display:inline-block}.refresh-icon.spinning{animation:spin 0.8s linear infinite}
+.refresh-icon{font-size:14px;display:inline-block}.refresh-icon.spinning{animation:spin .8s linear infinite}
 .last-fetched{font-size:11px;color:var(--dim);margin-top:6px}
 .grid{display:grid;grid-template-columns:1fr;gap:10px;padding:0 16px 24px}
 @media(min-width:600px){.grid{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:1000px){.grid{grid-template-columns:repeat(3,1fr)}}
 @media(min-width:1400px){.grid{grid-template-columns:repeat(4,1fr)}}
-.card{background:var(--surface);border-radius:16px;padding:16px;border:1px solid var(--border);transition:border-color 0.2s;animation:fadeUp 0.4s ease both}
+.card{background:var(--surface);border-radius:16px;padding:16px;border:1px solid var(--border);transition:border-color .2s;animation:fadeUp .4s ease both}
 .card:hover{border-color:var(--dim)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
@@ -89,15 +80,10 @@ select{width:100%;background:var(--surface2);border:1px solid var(--border);colo
   .summary-bar{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:10px 16px;z-index:100}
   .sum-item{flex:1;text-align:center}
   .sum-val{font-size:16px;font-weight:900}
-  .sum-lbl{font-size:9px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+  .sum-lbl{font-size:9px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
   body{padding-bottom:70px}
 }
-.setup-box{background:#0c1a2e;border:1px solid var(--m1)33;border-radius:14px;padding:20px;margin:16px;font-size:13px;line-height:1.8;color:var(--muted)}
-.setup-box h3{color:var(--m1);margin-bottom:10px;font-size:15px}
-.setup-box code{background:var(--surface2);padding:2px 7px;border-radius:5px;font-size:12px;color:var(--text);font-family:monospace}
-.setup-box ol{padding-left:18px;margin-top:8px}
-.setup-box li{margin-bottom:6px}
-.setup-box a{color:var(--m2)}
+.error-banner{background:#1a0808;border:1px solid #f8717133;border-radius:10px;padding:12px 16px;margin:0 16px 12px;font-size:12px;color:var(--lag);display:none}
 </style>
 </head>
 <body>
@@ -107,7 +93,7 @@ select{width:100%;background:var(--surface2);border:1px solid var(--border);colo
     <div>
       <div class="badge">IPC Compliance · EPSA · Live Data</div>
       <h1>Module Training Status</h1>
-      <div class="subtitle" id="subtitle">Connecting to Google Sheet…</div>
+      <div class="subtitle" id="subtitle">Loading…</div>
     </div>
     <div class="deadline-chips">
       <div class="chip m1"><div class="chip-label">Modul 1 Target</div><div class="chip-period">Jan – Mar 2026</div><div class="chip-note">⏱ Period closed</div></div>
@@ -118,209 +104,156 @@ select{width:100%;background:var(--surface2);border:1px solid var(--border);colo
 
 <div class="loader-wrap" id="loader">
   <div class="spinner"></div>
-  <div class="loader-text" id="loader-text">Fetching live data…</div>
+  <div class="loader-text">Fetching live data from Google Sheet…</div>
 </div>
 
-<div id="setup-needed" style="display:none">
-  <div class="setup-box">
-    <h3>⚙️ One-time setup needed to enable live data</h3>
-    <p>Because of browser security rules, the dashboard needs a small Google Apps Script to fetch your Sheet data. This takes about 3 minutes and only needs to be done once.</p>
-    <ol>
-      <li>Go to <a href="https://script.google.com" target="_blank">script.google.com</a> and click <strong style="color:var(--text)">New Project</strong></li>
-      <li>Delete all existing code and paste the code shown below</li>
-      <li>Click <strong style="color:var(--text)">Deploy → New deployment → Web app</strong></li>
-      <li>Set <strong style="color:var(--text)">"Who has access"</strong> to <strong style="color:var(--text)">Anyone</strong></li>
-      <li>Click <strong style="color:var(--text)">Deploy</strong> → copy the Web App URL</li>
-      <li>Paste the URL into the box below and click <strong style="color:var(--text)">Connect</strong></li>
-    </ol>
-    <div style="margin-top:12px;background:var(--surface2);border-radius:8px;padding:12px;font-family:monospace;font-size:11px;color:#a5b4fc;white-space:pre-wrap;overflow-x:auto">function doGet() {
-  var sheet = SpreadsheetApp.openById('1q-L3OSZ6RJs0q1q0rxrJzZZ1j0aHD9qRJhoaMkaqYJw');
-  var output = {};
-  
-  // Modul 1 summary (Pivot Table 4)
-  var tab1 = sheet.getSheetByName('TEST MASTERLIST 2') || sheet.getSheets()[0];
-  var m1data = [];
-  var m2data = [];
-  var rows = tab1.getDataRange().getValues();
-  
-  var inM1 = false, inM2 = false;
-  for (var i = 0; i &lt; rows.length; i++) {
-    var r = rows[i];
-    var c0 = String(r[0]).trim().toUpperCase();
-    var c1 = String(r[1]).trim().toUpperCase();
-    
-    // Detect M1 summary header
-    if (c0 === 'DEPARTMENT' &amp;&amp; c1 === 'MODULE') { inM1 = true; inM2 = false; continue; }
-    // Detect M2 summary header  
-    if (c0 === 'DEPARTMENT' &amp;&amp; c1.includes('COMPLETED')) { inM2 = true; inM1 = false; continue; }
-    
-    if (inM1 &amp;&amp; c0 &amp;&amp; c0 !== ':-:') {
-      if (!r[1]) { inM1 = false; continue; }
-      m1data.push({ dept: String(r[0]).trim(), submitted: parseInt(r[2])||0, denom: r[3]!==''?parseInt(r[3])||null:null });
-    }
-    if (inM2 &amp;&amp; c0 &amp;&amp; c0 !== ':-:') {
-      if (!r[1] &amp;&amp; !r[2]) { inM2 = false; continue; }
-      m2data.push({ dept: String(r[0]).trim(), submitted: parseInt(r[1])||0, denom: r[2]!==''?parseInt(r[2])||null:null });
-    }
-  }
-  
-  output.m1 = m1data;
-  output.m2 = m2data;
-  output.updated = new Date().toISOString();
-  
-  return ContentService.createTextOutput(JSON.stringify(output))
-    .setMimeType(ContentService.MimeType.JSON);
-}</div>
-    <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-      <input id="script-url" type="text" placeholder="Paste your Web App URL here…"
-        style="flex:1;min-width:200px;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 12px;font-size:13px;font-family:var(--font)">
-      <button onclick="connectScript()" style="background:var(--m1);color:#000;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:800;font-family:var(--font);cursor:pointer">Connect</button>
-    </div>
-    <div id="connect-status" style="font-size:12px;margin-top:8px;color:var(--muted)"></div>
-  </div>
-</div>
+<div id="app" style="display:none">
+  <div class="error-banner" id="error-banner">⚠ Could not fetch latest data from Google Sheet. Showing last cached values.</div>
 
-<div id="main-content" style="display:none">
-<div class="kpi-row">
-  <div class="kpi">
-    <div class="ring-wrap">
-      <svg width="52" height="52" viewBox="0 0 52 52">
-        <circle cx="26" cy="26" r="20" fill="none" stroke="#1e2840" stroke-width="6"/>
-        <circle cx="26" cy="26" r="20" fill="none" stroke="#38bdf8" stroke-width="6"
-          stroke-dasharray="125.7" stroke-dashoffset="125.7" id="ring-m1"
-          stroke-linecap="round" transform="rotate(-90 26 26)" style="transition:stroke-dashoffset 1.2s ease"/>
-      </svg>
-      <div>
-        <div class="kpi-val" id="kpi-m1-pct" style="color:var(--m1)">—</div>
-        <div class="kpi-label">Modul 1 Overall</div>
-        <div class="kpi-sub" id="kpi-m1-sub">—</div>
-      </div>
-    </div>
-  </div>
-  <div class="kpi">
-    <div class="ring-wrap">
-      <svg width="52" height="52" viewBox="0 0 52 52">
-        <circle cx="26" cy="26" r="20" fill="none" stroke="#1e2840" stroke-width="6"/>
-        <circle cx="26" cy="26" r="20" fill="none" stroke="#34d399" stroke-width="6"
-          stroke-dasharray="125.7" stroke-dashoffset="125.7" id="ring-m2"
-          stroke-linecap="round" transform="rotate(-90 26 26)" style="transition:stroke-dashoffset 1.2s ease"/>
-      </svg>
-      <div>
-        <div class="kpi-val" id="kpi-m2-pct" style="color:var(--m2)">—</div>
-        <div class="kpi-label">Modul 2 Overall</div>
-        <div class="kpi-sub" id="kpi-m2-sub">—</div>
-      </div>
-    </div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-val" style="color:var(--ok)" id="kpi-ontarget">—</div>
-    <div class="kpi-label">Depts On Track</div>
-    <div class="kpi-sub">≥ 80% completion</div>
-    <div class="kpi-note" style="color:var(--ok)" id="kpi-ontarget-note"></div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-val" style="color:var(--warn)" id="kpi-missing">—</div>
-    <div class="kpi-label">Missing Denominator</div>
-    <div class="kpi-sub" id="kpi-missing-names">Pending HOD data</div>
-    <div class="kpi-note" style="color:var(--warn)">⚠ % cannot be calculated</div>
-  </div>
-</div>
-
-<div class="filters">
-  <div class="filter-group">
-    <div class="filter-label">Module</div>
-    <div class="pill-row" id="module-pills">
-      <button class="pill active-all" onclick="setModule('all')">All Modules</button>
-      <button class="pill" onclick="setModule(1)">Modul 1 · Jan–Mar</button>
-      <button class="pill" onclick="setModule(2)">Modul 2 · Apr–Jun</button>
-    </div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-    <div class="filter-group">
-      <div class="filter-label">Department</div>
-      <select id="dept-select" onchange="render()"><option value="ALL">All Departments</option></select>
-    </div>
-    <div class="filter-group">
-      <div class="filter-label">Jawatan (Role)</div>
-      <select id="jawatan-select" onchange="render()"><option value="ALL">All Roles</option></select>
-      <div class="jawatan-warn" id="jawatan-warn" style="display:none">⚠ Jawatan filter: Modul 1 only</div>
-    </div>
-  </div>
-  <div class="filter-group" style="padding:10px 14px">
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-      <div>
-        <div class="filter-label" style="margin-bottom:6px">Sort By</div>
-        <div class="pill-row">
-          <button class="pill active-all" onclick="setSort('name')">Name</button>
-          <button class="pill" onclick="setSort('pct')">% Complete</button>
-          <button class="pill" onclick="setSort('submitted')">Submitted</button>
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="ring-wrap">
+        <svg width="52" height="52" viewBox="0 0 52 52">
+          <circle cx="26" cy="26" r="20" fill="none" stroke="#1e2840" stroke-width="6"/>
+          <circle cx="26" cy="26" r="20" fill="none" stroke="#38bdf8" stroke-width="6" stroke-dasharray="125.7" stroke-dashoffset="125.7" id="ring-m1" stroke-linecap="round" transform="rotate(-90 26 26)" style="transition:stroke-dashoffset 1.2s ease"/>
+        </svg>
+        <div>
+          <div class="kpi-val" id="kpi-m1-pct" style="color:var(--m1)">—</div>
+          <div class="kpi-label">Modul 1 Overall</div>
+          <div class="kpi-sub" id="kpi-m1-sub">—</div>
         </div>
       </div>
-      <div>
-        <button class="refresh-btn" onclick="loadData(true)">
-          <span class="refresh-icon" id="refresh-icon">↻</span> Refresh Data
-        </button>
-        <div class="last-fetched" id="last-fetched"></div>
+    </div>
+    <div class="kpi">
+      <div class="ring-wrap">
+        <svg width="52" height="52" viewBox="0 0 52 52">
+          <circle cx="26" cy="26" r="20" fill="none" stroke="#1e2840" stroke-width="6"/>
+          <circle cx="26" cy="26" r="20" fill="none" stroke="#34d399" stroke-width="6" stroke-dasharray="125.7" stroke-dashoffset="125.7" id="ring-m2" stroke-linecap="round" transform="rotate(-90 26 26)" style="transition:stroke-dashoffset 1.2s ease"/>
+        </svg>
+        <div>
+          <div class="kpi-val" id="kpi-m2-pct" style="color:var(--m2)">—</div>
+          <div class="kpi-label">Modul 2 Overall</div>
+          <div class="kpi-sub" id="kpi-m2-sub">—</div>
+        </div>
+      </div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val" style="color:var(--ok)" id="kpi-ontarget">—</div>
+      <div class="kpi-label">Depts On Track</div>
+      <div class="kpi-sub">≥ 80% completion</div>
+      <div class="kpi-note" style="color:var(--ok)" id="kpi-ontarget-note"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val" style="color:var(--warn)" id="kpi-missing">—</div>
+      <div class="kpi-label">Missing Denominator</div>
+      <div class="kpi-sub" id="kpi-missing-names">—</div>
+      <div class="kpi-note" style="color:var(--warn)">⚠ % cannot be calculated</div>
+    </div>
+  </div>
+
+  <div class="filters">
+    <div class="filter-group">
+      <div class="filter-label">Module</div>
+      <div class="pill-row" id="module-pills">
+        <button class="pill active-all" onclick="setModule('all')">All Modules</button>
+        <button class="pill" onclick="setModule(1)">Modul 1 · Jan–Mar</button>
+        <button class="pill" onclick="setModule(2)">Modul 2 · Apr–Jun</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="filter-group">
+        <div class="filter-label">Department</div>
+        <select id="dept-select" onchange="render()"><option value="ALL">All Departments</option></select>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Jawatan (Role)</div>
+        <select id="jawatan-select" onchange="render()"><option value="ALL">All Roles</option></select>
+        <div class="jawatan-warn" id="jawatan-warn" style="display:none">⚠ Jawatan filter: Modul 1 only</div>
+      </div>
+    </div>
+    <div class="filter-group" style="padding:10px 14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <div>
+          <div class="filter-label" style="margin-bottom:6px">Sort By</div>
+          <div class="pill-row">
+            <button class="pill active-all" onclick="setSort('name')">Name</button>
+            <button class="pill" onclick="setSort('pct')">% Complete</button>
+            <button class="pill" onclick="setSort('submitted')">Submitted</button>
+          </div>
+        </div>
+        <div>
+          <button class="refresh-btn" onclick="fetchLive(true)">
+            <span class="refresh-icon" id="refresh-icon">↻</span> Refresh Data
+          </button>
+          <div class="last-fetched" id="last-fetched"></div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="grid" id="card-grid"></div>
+  <div class="grid" id="card-grid"></div>
 
-<div class="legend">
-  <span class="legend-label">Status:</span>
-  <span class="legend-item"><span class="legend-dot" style="background:var(--ok)"></span>On Track (≥80%)</span>
-  <span class="legend-item"><span class="legend-dot" style="background:var(--risk)"></span>At Risk (50–79%)</span>
-  <span class="legend-item"><span class="legend-dot" style="background:var(--lag)"></span>Lagging (&lt;50%)</span>
-  <span class="legend-item"><span class="legend-dot" style="background:var(--na)"></span>No Denominator</span>
-  <span class="legend-src">🔴 Live · Google Sheet · Pivot Table 4</span>
-</div>
+  <div class="legend">
+    <span class="legend-label">Status:</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--ok)"></span>On Track (≥80%)</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--risk)"></span>At Risk (50–79%)</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--lag)"></span>Lagging (&lt;50%)</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--na)"></span>No Denominator</span>
+    <span class="legend-src">🔴 Live · Google Sheet · Auto-refresh on open</span>
+  </div>
 </div>
 
 <div class="summary-bar">
   <div class="sum-item"><div class="sum-val" style="color:var(--m1)" id="mob-m1">—</div><div class="sum-lbl">Modul 1</div></div>
   <div class="sum-item" style="border-left:1px solid var(--border);border-right:1px solid var(--border)">
-    <div class="sum-val" style="color:var(--m2)" id="mob-m2">—</div><div class="sum-lbl">Modul 2</div>
-  </div>
+    <div class="sum-val" style="color:var(--m2)" id="mob-m2">—</div><div class="sum-lbl">Modul 2</div></div>
   <div class="sum-item"><div class="sum-val" style="color:var(--ok)" id="mob-on">—</div><div class="sum-lbl">On Track</div></div>
 </div>
 
 <script>
-// ── CONFIG ────────────────────────────────────────────────────────────────────
-const SCRIPT_URL_KEY = 'epsa_script_url';
+// ── STATIC DENOMINATORS (same for M1 and M2 — total staff per dept, never changes) ──
+const DENOM = {
+  ANAEST:198, DIETETIK:27, FARMASI:114, FISIOTERAPI:18, FORENSIC:13,
+  KECEMASAN:213, MEDICAL:null, 'O&G':213, OMFS:25, ORTOPEDIK:50,
+  PATHOLOGY:89, PEDIATRIK:251, PEMBEDAHAN:120, PENGURUSAN:5,
+  'PERGIGIAN PEDIATRIK':28, PSIKIATRI:61, RADIOLOGI:59,
+  'SPECIAL CARE DENTISTRY':14, 'TERAPI CARA KERJA':21
+};
 
+// Friendly names
 const DEPT_NAMES = {
-  'ANAEST':'Anaesthesiology','DIETETIK':'Dietetics','FARMASI':'Pharmacy',
-  'FISIOTERAPI':'Physiotherapy','FORENSIC':'Forensic','KECEMASAN':'Emergency',
-  'MEDICAL':'Medical','O&G':'Obstetrics & Gynae','OMFS':'Oral & Maxillofacial',
-  'ORTOPEDIK':'Orthopaedics','PATHOLOGY':'Pathology','PEDIATRIK':'Paediatrics',
-  'PEMBEDAHAN':'Surgery','PENGURUSAN':'Administration',
-  'PERGIGIAN PEDIATRIK':'Paediatric Dentistry','PSIKIATRI':'Psychiatry',
-  'RADIOLOGI':'Radiology','SPECIAL CARE DENTISTRY':'Special Care Dentistry',
-  'TERAPI CARA KERJA':'Occupational Therapy',
-  // M2 name variants
-  'DIETETIK (DIETETIC)':'Dietetics','FORENSIK (FORENSIC)':'Forensic',
-  'TERAPI CARAKERJA (OCCUPATIONAL THERAPY)':'Occupational Therapy',
-  'UNIT KAWALAN INFEKSI (PENGURUSAN)':'Administration',
-  'PATOLOGI (PATHOLOGY)':'Pathology','FARMASI (PHARMACY)':'Pharmacy',
-  'FISIOTERAPI (PHYSIOTHERAPY)':'Physiotherapy',
-  'RADIOLOGI (RADIOLOGY)':'Radiology','SURGICAL':'Surgery',
-  'PERUBATAN (MEDICAL)':'Medical','PSIKIATRI (PSYCHIATRY)':'Psychiatry',
-  'PEDIATRIK (PAEDIATRIC)':'Paediatrics',
+  ANAEST:'Anaesthesiology',DIETETIK:'Dietetics',FARMASI:'Pharmacy',
+  FISIOTERAPI:'Physiotherapy',FORENSIC:'Forensic',KECEMASAN:'Emergency',
+  MEDICAL:'Medical','O&G':'Obstetrics & Gynae',OMFS:'Oral & Maxillofacial',
+  ORTOPEDIK:'Orthopaedics',PATHOLOGY:'Pathology',PEDIATRIK:'Paediatrics',
+  PEMBEDAHAN:'Surgery',PENGURUSAN:'Administration',
+  'PERGIGIAN PEDIATRIK':'Paediatric Dentistry',PSIKIATRI:'Psychiatry',
+  RADIOLOGI:'Radiology','SPECIAL CARE DENTISTRY':'Special Care Dentistry',
+  'TERAPI CARA KERJA':'Occupational Therapy'
 };
 
-// Canonical dept keys
-const DEPT_KEY_MAP = {
-  'Dietetics':'DIETETIK','Forensic':'FORENSIC','Occupational Therapy':'TERAPI CARA KERJA',
-  'Administration':'PENGURUSAN','Pathology':'PATHOLOGY','Pharmacy':'FARMASI',
-  'Physiotherapy':'FISIOTERAPI','Oral & Maxillofacial':'OMFS','Obstetrics & Gynae':'O&G',
-  'Surgery':'PEMBEDAHAN','Radiology':'RADIOLOGI','Medical':'MEDICAL','Psychiatry':'PSIKIATRI',
-  'Paediatrics':'PEDIATRIK','Anaesthesiology':'ANAEST','Emergency':'KECEMASAN',
-  'Orthopaedics':'ORTOPEDIK','Paediatric Dentistry':'PERGIGIAN PEDIATRIK',
-  'Special Care Dentistry':'SPECIAL CARE DENTISTRY',
+// Map variant names from sheet to canonical keys
+const NAME_TO_KEY = {
+  // M1 names
+  'ANAEST':'ANAEST','FISIOTERAPI':'FISIOTERAPI','PSIKIATRI':'PSIKIATRI',
+  'ORTOPEDIK':'ORTOPEDIK','FARMASI':'FARMASI','O&G':'O&G',
+  'PERGIGIAN PEDIATRIK':'PERGIGIAN PEDIATRIK','OMFS':'OMFS','MEDICAL':'MEDICAL',
+  'PATHOLOGY':'PATHOLOGY','DIETETIK':'DIETETIK','PENGURUSAN':'PENGURUSAN',
+  'PEMBEDAHAN':'PEMBEDAHAN','SPECIAL CARE DENTISTRY':'SPECIAL CARE DENTISTRY',
+  'RADIOLOGI':'RADIOLOGI','PEDIATRIK':'PEDIATRIK','FORENSIC':'FORENSIC',
+  'KECEMASAN':'KECEMASAN','TERAPI CARA KERJA':'TERAPI CARA KERJA',
+  // M2 name variants from sheet
+  'DIETETIK (DIETETIC)':'DIETETIK','FORENSIK (FORENSIC)':'FORENSIC',
+  'TERAPI CARAKERJA (OCCUPATIONAL THERAPY)':'TERAPI CARA KERJA',
+  'UNIT KAWALAN INFEKSI (PENGURUSAN)':'PENGURUSAN',
+  'PATOLOGI (PATHOLOGY)':'PATHOLOGY','FARMASI (PHARMACY)':'FARMASI',
+  'FISIOTERAPI (PHYSIOTHERAPY)':'FISIOTERAPI','RADIOLOGI (RADIOLOGY)':'RADIOLOGI',
+  'SURGICAL':'PEMBEDAHAN','PERUBATAN (MEDICAL)':'MEDICAL',
+  'PSIKIATRI (PSYCHIATRY)':'PSIKIATRI','PEDIATRIK (PAEDIATRIC)':'PEDIATRIK',
+  'ANAESTH':'ANAEST','PAEDS':'PEDIATRIK','FORENSIK':'FORENSIC',
 };
 
+// Jawatan breakdown (M1 only, from Pivot Table)
 const JAWATAN_M1 = {
   'DOKTOR':{ANAEST:18,FORENSIC:10,KECEMASAN:8,MEDICAL:14,'O&G':17,OMFS:7,ORTOPEDIK:3,PATHOLOGY:22,PEDIATRIK:41,PEMBEDAHAN:1,PENGURUSAN:3,'PERGIGIAN PEDIATRIK':6,PSIKIATRI:5,RADIOLOGI:5,'SPECIAL CARE DENTISTRY':1},
   'JURURAWAT':{ANAEST:16,FARMASI:1,KECEMASAN:2,MEDICAL:20,'O&G':118,OMFS:2,ORTOPEDIK:2,PEDIATRIK:115,PEMBEDAHAN:2,PENGURUSAN:3,'PERGIGIAN PEDIATRIK':1,PSIKIATRI:6},
@@ -339,111 +272,136 @@ const JAWATAN_M1 = {
   'PENOLONG PEGAWAI FARMASI':{FARMASI:3},
 };
 
+// Google Sheet CSV URLs — one per summary tab
+const SHEET_ID = '1q-L3OSZ6RJs0q1q0rxrJzZZ1j0aHD9qRJhoaMkaqYJw';
+// gid of the tab that has Pivot Table 4 (M1) AND M2 summary
+const TAB_GID = '1254715468';
+const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${TAB_GID}`;
+
+// ── INITIAL DATA (fallback if fetch fails — from your sheet as of 21 May 2026) ──
+const FALLBACK = {
+  m1:{ANAEST:40,DIETETIK:27,FARMASI:106,FISIOTERAPI:10,FORENSIC:13,KECEMASAN:10,MEDICAL:36,'O&G':145,OMFS:17,ORTOPEDIK:5,PATHOLOGY:64,PEDIATRIK:169,PEMBEDAHAN:4,PENGURUSAN:7,'PERGIGIAN PEDIATRIK':18,PSIKIATRI:12,RADIOLOGI:6,'SPECIAL CARE DENTISTRY':3,'TERAPI CARA KERJA':17},
+  m2:{DIETETIK:26,FORENSIC:9,'TERAPI CARA KERJA':10,PENGURUSAN:2,PATHOLOGY:26,FARMASI:31,FISIOTERAPI:4,OMFS:4,'O&G':17,PEMBEDAHAN:0,RADIOLOGI:0}
+};
+
 // ── STATE ─────────────────────────────────────────────────────────────────────
-let deptData = {}; // key -> {name, m1, m1d, m2, m2d}
+let deptData = {};
 let activeModule = 'all', activeSort = 'name';
 
-// ── HELPERS ───────────────────────────────────────────────────────────────────
-function pct(n,d){ if(d===null||d===0||n===null||n===undefined)return null; return Math.round(n/d*1000)/10; }
-function normalizeName(raw){
-  const u = raw.trim().toUpperCase();
-  return DEPT_NAMES[u] || toTitle(raw.trim());
-}
-function toTitle(s){ return s.toLowerCase().replace(/\b\w/g,c=>c.toUpperCase()); }
-function deptKey(friendlyName){
-  return DEPT_KEY_MAP[friendlyName] || friendlyName.toUpperCase().replace(/[^A-Z0-9&]/g,' ').trim();
-}
-function statusClass(p){ if(p===null)return 's-na'; if(p>=80)return 's-ok'; if(p>=50)return 's-risk'; return 's-lag'; }
-function statusText(p){ if(p===null)return 'N/A'; if(p>=80)return 'On Track'; if(p>=50)return 'At Risk'; return 'Lagging'; }
-function barColor(p){ if(p===null)return 'var(--dim)'; if(p>=80)return 'var(--ok)'; if(p>=50)return 'var(--risk)'; return 'var(--lag)'; }
+function pct(n,d){if(d===null||d===0||n===null||n===undefined)return null;return Math.round(n/d*1000)/10;}
+function statusClass(p){if(p===null)return 's-na';if(p>=80)return 's-ok';if(p>=50)return 's-risk';return 's-lag';}
+function statusText(p){if(p===null)return 'N/A';if(p>=80)return 'On Track';if(p>=50)return 'At Risk';return 'Lagging';}
+function barColor(p){if(p===null)return 'var(--dim)';if(p>=80)return 'var(--ok)';if(p>=50)return 'var(--risk)';return 'var(--lag)';}
 
-// ── SCRIPT URL MANAGEMENT ─────────────────────────────────────────────────────
-function getSavedUrl(){ try{ return localStorage.getItem(SCRIPT_URL_KEY)||''; }catch(e){ return ''; } }
-function saveUrl(u){ try{ localStorage.setItem(SCRIPT_URL_KEY,u); }catch(e){} }
-
-async function connectScript(){
-  const url = document.getElementById('script-url').value.trim();
-  if(!url){ document.getElementById('connect-status').textContent='Please paste the Web App URL.'; return; }
-  document.getElementById('connect-status').textContent='Testing connection…';
-  try{
-    const r = await fetch(url);
-    if(!r.ok) throw new Error('Bad response');
-    const d = await r.json();
-    if(!d.m1) throw new Error('Unexpected data format');
-    saveUrl(url);
-    document.getElementById('connect-status').textContent='✅ Connected! Loading dashboard…';
-    setTimeout(()=>loadData(),500);
-  }catch(e){
-    document.getElementById('connect-status').textContent='❌ Could not connect. Check the URL and make sure access is set to "Anyone".';
-  }
-}
-
-// ── DATA LOADING ──────────────────────────────────────────────────────────────
-async function loadData(isRefresh=false){
-  const scriptUrl = getSavedUrl();
-
-  if(!scriptUrl){
-    document.getElementById('loader').style.display='none';
-    document.getElementById('setup-needed').style.display='block';
-    return;
-  }
-
-  if(isRefresh){
-    document.getElementById('refresh-icon').classList.add('spinning');
-  }
-
-  try{
-    const res = await fetch(scriptUrl);
-    if(!res.ok) throw new Error('Fetch failed');
-    const data = await res.json();
-    processData(data);
-    document.getElementById('loader').style.display='none';
-    document.getElementById('setup-needed').style.display='none';
-    document.getElementById('main-content').style.display='block';
-    updateKPIs();
-    populateSelects();
-    render();
-    const now = new Date();
-    document.getElementById('last-fetched').textContent =
-      `Updated: ${now.toLocaleDateString('en-MY')} ${now.toLocaleTimeString('en-MY',{hour:'2-digit',minute:'2-digit'})}`;
-    document.getElementById('subtitle').textContent =
-      `${Object.keys(deptData).length} Departments · Live from Google Sheet`;
-    setTimeout(animateRings, 400);
-  }catch(e){
-    document.getElementById('loader').style.display='none';
-    document.getElementById('setup-needed').style.display='block';
-    document.getElementById('connect-status').textContent='⚠ Could not load data. Your script URL may have changed — paste the new one below.';
-  }finally{
-    const icon = document.getElementById('refresh-icon');
-    if(icon) icon.classList.remove('spinning');
-  }
-}
-
-function processData(data){
+function buildDeptData(m1counts, m2counts){
   deptData = {};
+  const allKeys = Object.keys(DENOM);
+  allKeys.forEach(key=>{
+    deptData[key]={
+      name: DEPT_NAMES[key]||key,
+      m1: m1counts[key]||0,
+      m1d: DENOM[key],
+      m2: m2counts[key]||0,
+      m2d: DENOM[key]   // same denominator!
+    };
+  });
+}
 
-  // Process Modul 1
-  (data.m1||[]).forEach(row=>{
-    const name = normalizeName(row.dept);
-    const key = deptKey(name);
-    if(!deptData[key]) deptData[key]={name,m1:0,m1d:null,m2:0,m2d:null};
-    deptData[key].m1 = row.submitted||0;
-    deptData[key].m1d = row.denom;
+// ── CSV PARSER ────────────────────────────────────────────────────────────────
+function resolveKey(rawName){
+  const u = rawName.trim().toUpperCase();
+  return NAME_TO_KEY[u] || u;
+}
+
+function parseCSV(csv){
+  const rows = csv.split('\n').map(row=>{
+    const cells=[]; let cur='', inQ=false;
+    for(let i=0;i<row.length;i++){
+      if(row[i]==='"'){inQ=!inQ;}
+      else if(row[i]===','&&!inQ){cells.push(cur.trim());cur='';}
+      else cur+=row[i];
+    }
+    cells.push(cur.trim());
+    return cells;
   });
 
-  // Process Modul 2
-  (data.m2||[]).forEach(row=>{
-    const name = normalizeName(row.dept);
-    const key = deptKey(name);
-    if(!deptData[key]) deptData[key]={name,m1:0,m1d:null,m2:0,m2d:null};
-    deptData[key].m2 = row.submitted||0;
-    deptData[key].m2d = row.denom;
-  });
+  const m1={}, m2={};
+  let inM1=false, inM2=false;
+
+  for(let i=0;i<rows.length;i++){
+    const r=rows[i];
+    const c0=(r[0]||'').trim().toUpperCase();
+    const c1=(r[1]||'').trim().toUpperCase();
+
+    // Detect M1 table header: DEPARTMENT | MODULE | TOTAL SUBMITTED | ...
+    if(c0==='DEPARTMENT'&&c1==='MODULE'){inM1=true;inM2=false;continue;}
+    // Detect M2 table header: DEPARTMENT | COMPLETED ... | TOTAL STAFF ...
+    if(c0==='DEPARTMENT'&&(c1.includes('COMPLETED')||c1.includes('NUMERATOR'))){inM2=true;inM1=false;continue;}
+
+    if(inM1){
+      if(!c0||c0===':-:'||c0===''){inM1=false;continue;}
+      const key=resolveKey(r[0]);
+      const modText=(r[1]||'').toUpperCase();
+      if(!modText.includes('MODUL')){inM1=false;continue;}
+      if(modText.includes('MODUL 1')&&DENOM.hasOwnProperty(key)){
+        m1[key]=parseInt((r[2]||'').replace(/[^0-9]/g,''))||0;
+      }
+    }
+
+    if(inM2){
+      if(!c0||c0===':-:'||c0===''){inM2=false;continue;}
+      const key=resolveKey(r[0]);
+      if(!DENOM.hasOwnProperty(key))continue;
+      const submitted=parseInt((r[1]||'').replace(/[^0-9]/g,''))||0;
+      m2[key]=submitted;
+    }
+  }
+
+  return {m1,m2};
+}
+
+// ── FETCH ─────────────────────────────────────────────────────────────────────
+async function fetchLive(isRefresh=false){
+  if(isRefresh) document.getElementById('refresh-icon').classList.add('spinning');
+
+  try{
+    // Use a CORS proxy (allorigins) to bypass browser restriction
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(CSV_URL)}`;
+    const res = await fetch(proxyUrl, {cache:'no-cache'});
+    if(!res.ok) throw new Error('Failed');
+    const csv = await res.text();
+    const {m1,m2} = parseCSV(csv);
+
+    // Validate we got real data
+    const totalM1 = Object.values(m1).reduce((a,b)=>a+b,0);
+    if(totalM1 < 10) throw new Error('Suspicious data');
+
+    buildDeptData(m1,m2);
+    document.getElementById('error-banner').style.display='none';
+    const now=new Date();
+    document.getElementById('last-fetched').textContent=
+      `Live · Updated: ${now.toLocaleDateString('en-MY')} ${now.toLocaleTimeString('en-MY',{hour:'2-digit',minute:'2-digit'})}`;
+  }catch(e){
+    console.warn('Live fetch failed, using fallback:',e);
+    buildDeptData(FALLBACK.m1, FALLBACK.m2);
+    document.getElementById('error-banner').style.display='block';
+    document.getElementById('last-fetched').textContent='Showing data as of 21 May 2026';
+  }
+
+  document.getElementById('loader').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('subtitle').textContent=`${Object.keys(deptData).length} Departments · Live from Google Sheet`;
+  updateKPIs();
+  populateSelects();
+  render();
+  setTimeout(animateRings,400);
+
+  if(isRefresh) document.getElementById('refresh-icon').classList.remove('spinning');
 }
 
 // ── KPIs ──────────────────────────────────────────────────────────────────────
 function updateKPIs(){
-  const keys = Object.keys(deptData);
+  const keys=Object.keys(deptData);
   const v1=keys.filter(k=>deptData[k].m1d!==null);
   const v2=keys.filter(k=>deptData[k].m2d!==null);
   const s1=v1.reduce((a,k)=>a+deptData[k].m1,0), d1=v1.reduce((a,k)=>a+deptData[k].m1d,0);
@@ -451,7 +409,7 @@ function updateKPIs(){
   const p1=pct(s1,d1), p2=pct(s2,d2);
   const on1=v1.filter(k=>pct(deptData[k].m1,deptData[k].m1d)>=80).length;
   const on2=v2.filter(k=>pct(deptData[k].m2,deptData[k].m2d)>=80).length;
-  const missing=keys.filter(k=>deptData[k].m1d===null||deptData[k].m2d===null);
+  const missing=keys.filter(k=>deptData[k].m1d===null);
 
   document.getElementById('kpi-m1-pct').textContent=p1!==null?p1+'%':'—';
   document.getElementById('kpi-m1-sub').textContent=`${s1} / ${d1} staff`;
@@ -459,8 +417,8 @@ function updateKPIs(){
   document.getElementById('kpi-m2-sub').textContent=`${s2} / ${d2} staff`;
   document.getElementById('kpi-ontarget').textContent=on1+on2;
   document.getElementById('kpi-ontarget-note').textContent=`M1: ${on1} · M2: ${on2} depts`;
-  document.getElementById('kpi-missing').textContent=missing.length;
-  document.getElementById('kpi-missing-names').textContent=missing.map(k=>deptData[k].name).join(', ')||'None ✅';
+  document.getElementById('kpi-missing').textContent=missing.length||'0';
+  document.getElementById('kpi-missing-names').textContent=missing.length?missing.map(k=>deptData[k].name).join(', '):'All denominators complete ✅';
   document.getElementById('mob-m1').textContent=p1!==null?p1+'%':'—';
   document.getElementById('mob-m2').textContent=p2!==null?p2+'%':'—';
   document.getElementById('mob-on').textContent=on1+on2;
@@ -469,9 +427,9 @@ function updateKPIs(){
 
 function animateRings(){
   const circ=125.7;
-  const r1=document.getElementById('ring-m1'), r2=document.getElementById('ring-m2');
-  if(r1&&window._p1!==null) r1.style.strokeDashoffset=circ-(window._p1/100)*circ;
-  if(r2&&window._p2!==null) r2.style.strokeDashoffset=circ-(window._p2/100)*circ;
+  const r1=document.getElementById('ring-m1'),r2=document.getElementById('ring-m2');
+  if(r1&&window._p1!==null)r1.style.strokeDashoffset=circ-(window._p1/100)*circ;
+  if(r2&&window._p2!==null)r2.style.strokeDashoffset=circ-(window._p2/100)*circ;
 }
 
 // ── SELECTS ───────────────────────────────────────────────────────────────────
@@ -502,12 +460,12 @@ function setSort(s){
   activeSort=s;
   document.querySelectorAll('.filter-group:last-child .pill').forEach((btn,i)=>{
     btn.className='pill';
-    if((s==='name'&&i===0)||(s==='pct'&&i===1)||(s==='submitted'&&i===2)) btn.className='pill active-all';
+    if((s==='name'&&i===0)||(s==='pct'&&i===1)||(s==='submitted'&&i===2))btn.className='pill active-all';
   });
   render();
 }
 
-// ── RENDER ────────────────────────────────────────────────────────────────────
+// ── RENDER CARDS ──────────────────────────────────────────────────────────────
 function render(){
   const deptFilter=document.getElementById('dept-select').value;
   const jawatanFilter=document.getElementById('jawatan-select').value;
@@ -529,7 +487,7 @@ function render(){
     if(activeSort==='name')return a.name.localeCompare(b.name);
     if(activeSort==='pct'){
       const ap=activeModule===2?a.m2p:a.m1p,bp=activeModule===2?b.m2p:b.m1p;
-      if(ap===null&&bp===null)return 0; if(ap===null)return 1; if(bp===null)return -1;
+      if(ap===null&&bp===null)return 0;if(ap===null)return 1;if(bp===null)return -1;
       return bp-ap;
     }
     if(activeSort==='submitted'){
@@ -540,29 +498,26 @@ function render(){
   });
 
   const grid=document.getElementById('card-grid');
-  if(!rows.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--muted)">No results.</div>';return;}
+
+  function modRow(label,period,color,num,den,pp){
+    const bc=barColor(pp);
+    const w=pp!==null?Math.min(pp,100)+'%':'0%';
+    const pctStr=pp!==null?pp+'%':'—';
+    const countStr=den!==null?`${num} / ${den}`:`${num!=null?num:'—'} submitted`;
+    const warn=(den===null&&num!==null)?'<div class="denom-warn">⚠ Denominator pending from HOD</div>':'';
+    return `<div class="mod-row">
+      <div class="mod-meta">
+        <div class="mod-left"><div class="dot" style="background:${color}"></div><span class="mod-name-lbl">${label} · ${period}</span></div>
+        <div class="mod-right"><span class="mod-count">${countStr}</span><span class="mod-pct" style="color:${bc}">${pctStr}</span></div>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:${w};background:${bc}"></div></div>${warn}</div>`;
+  }
 
   grid.innerHTML=rows.map((r,idx)=>{
     const primP=activeModule===2?r.m2p:r.m1p;
     const delay=Math.min(idx*40,400);
-
-    function modRow(label,period,color,num,den,pp){
-      const bc=barColor(pp);
-      const w=pp!==null?Math.min(pp,100)+'%':'0%';
-      const pctStr=pp!==null?pp+'%':'—';
-      const countStr=den?`${num} / ${den}`:`${num!=null?num:'—'} submitted`;
-      const warn=(num!==null&&num!==undefined&&den===null)?'<div class="denom-warn">⚠ Denominator pending from HOD</div>':'';
-      return `<div class="mod-row">
-        <div class="mod-meta">
-          <div class="mod-left"><div class="dot" style="background:${color}"></div><span class="mod-name-lbl">${label} · ${period}</span></div>
-          <div class="mod-right"><span class="mod-count">${countStr}</span><span class="mod-pct" style="color:${bc}">${pctStr}</span></div>
-        </div>
-        <div class="bar-track"><div class="bar-fill" style="width:${w};background:${bc}"></div></div>${warn}</div>`;
-    }
-
     const jawHtml=r.jawatanCount!==null
       ?`<div class="jawatan-result">${document.getElementById('jawatan-select').value}: <strong>${r.jawatanCount} completed M1</strong></div>`:'';
-
     return `<div class="card" style="animation-delay:${delay}ms">
       <div class="card-header">
         <div><div class="dept-name">${r.name}</div><div class="dept-key">${r.key}</div></div>
@@ -575,7 +530,7 @@ function render(){
   }).join('');
 }
 
-loadData();
+fetchLive();
 </script>
 </body>
 </html>

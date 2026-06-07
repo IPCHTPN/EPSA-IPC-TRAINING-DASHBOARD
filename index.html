@@ -357,10 +357,18 @@ const JAWATAN_M1 = {
 };
 
 const STORAGE_KEY = 'epsa_script_url_v2';
+// Hardcoded Web App URL — updated June 2026
+const HARDCODED_URL = 'https://script.google.com/macros/s/AKfycbzNgD-vF4Pu-uaS89xOK91BoTgy4gGmFwodIL6xTVVSYYayTLjjcY3u8evxdUZ7sOEd/exec';
 let deptData = {}, activeModule = 'all', activeSort = 'name';
 
 // ── STORAGE ───────────────────────────────────────────────────────────────────
-function getUrl(){ try{ return localStorage.getItem(STORAGE_KEY)||''; }catch(e){ return ''; } }
+function getUrl(){ 
+  try{ 
+    return localStorage.getItem(STORAGE_KEY) || HARDCODED_URL; 
+  }catch(e){ 
+    return HARDCODED_URL; 
+  } 
+}
 function saveUrl(u){ try{ localStorage.setItem(STORAGE_KEY,u); }catch(e){} }
 function clearUrl(){ try{ localStorage.removeItem(STORAGE_KEY); }catch(e){} location.reload(); return false; }
 

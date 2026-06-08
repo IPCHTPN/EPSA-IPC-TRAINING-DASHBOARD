@@ -263,8 +263,8 @@ select{width:100%;background:var(--surface2);border:1px solid var(--border);colo
             <span class="refresh-icon" id="refresh-icon">↻</span> Refresh Data
           </button>
           <div class="last-fetched" id="last-fetched"></div>
-          <div style="font-size:10px;color:var(--dim);margin-top:3px">
-            <a href="#" onclick="clearUrl()" style="color:var(--dim)">⚙ Reconfigure</a>
+          <div style="font-size:11px;margin-top:5px">
+            <a href="#" onclick="clearUrl()" style="color:#6ea8fe;text-decoration:underline">⚙ Reconfigure URL</a>
           </div>
         </div>
       </div>
@@ -358,19 +358,21 @@ const JAWATAN_M1 = {
 
 const STORAGE_KEY = 'epsa_script_url_v2';
 // Hardcoded Web App URL — updated June 2026
-const HARDCODED_URL = 'https://script.google.com/macros/s/AKfycbzNgD-vF4Pu-uaS89xOK91BoTgy4gGmFwodIL6xTVVSYYayTLjjcY3u8evxdUZ7sOEd/exec';
+const HARDCODED_URL = 'https://script.google.com/macros/s/AKfycbywfPNFeILeN9eF8KL7_TrfGfCp1tB6Ir57OHJMyDnsY3nvZsLrJWaStZVQZGfkpoGP/exec';
 let deptData = {}, activeModule = 'all', activeSort = 'name';
 
 // ── STORAGE ───────────────────────────────────────────────────────────────────
 function getUrl(){ 
-  try{ 
-    return localStorage.getItem(STORAGE_KEY) || HARDCODED_URL; 
-  }catch(e){ 
-    return HARDCODED_URL; 
-  } 
+  // Always use hardcoded URL — ignores any old localStorage value
+  return HARDCODED_URL; 
 }
 function saveUrl(u){ try{ localStorage.setItem(STORAGE_KEY,u); }catch(e){} }
-function clearUrl(){ try{ localStorage.removeItem(STORAGE_KEY); }catch(e){} location.reload(); return false; }
+function clearUrl(){ 
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){} 
+  alert('URL cleared. Reloading with default URL.'); 
+  location.reload(); 
+  return false; 
+}
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 function pct(n,d){ if(d===null||!d||n===null)return null; return Math.round(n/d*1000)/10; }

@@ -381,22 +381,46 @@ function statusText(p){ if(p===null)return 'N/A'; if(p>=80)return 'On Track'; if
 function barColor(p){ if(p===null)return 'var(--dim)'; if(p>=80)return 'var(--ok)'; if(p>=50)return 'var(--risk)'; return 'var(--lag)'; }
 function resolveKey(raw){ return NAME_TO_KEY[raw.trim().toUpperCase()] || raw.trim().toUpperCase(); }
 
+// VERIFIED BASELINE - Dr Saihah data cleaning June 2026
+// Dashboard always shows MAX(live, baseline) per dept
+const BASELINE_M1 = {
+  'DIETETIK':27,'TERAPI CARA KERJA':19,'FARMASI':107,'PATHOLOGY':98,
+  'SPECIAL CARE DENTISTRY':3,'PEDIATRIK':157,'OMFS':18,'KECEMASAN':12,
+  'RADIOLOGI':6,'ANAEST':45,'MEDICAL':53,'O&G':146,'PEMBEDAHAN':4,
+  'ORTOPEDIK':5,'FORENSIC':14,'PSIKIATRI':12,'PERGIGIAN PEDIATRIK':29,
+  'PENGURUSAN':12,'FISIOTERAPI':17
+};
+const BASELINE_M2 = {
+  'DIETETIK':27,'TERAPI CARA KERJA':17,'FARMASI':100,'PATHOLOGY':39,
+  'SPECIAL CARE DENTISTRY':1,'PEDIATRIK':100,'OMFS':13,'KECEMASAN':9,
+  'RADIOLOGI':5,'ANAEST':28,'MEDICAL':45,'O&G':83,'PEMBEDAHAN':2,
+  'ORTOPEDIK':4,'FORENSIC':13,'PSIKIATRI':17,'PERGIGIAN PEDIATRIK':23,
+  'PENGURUSAN':8,'FISIOTERAPI':7
+};
+
 function buildDeptData(m1raw, m2raw){
   deptData = {};
   Object.keys(DEPT_CONFIG).forEach(key=>{
     const cfg = DEPT_CONFIG[key];
-    // Try direct key, then resolve variants
-    const m1val = m1raw[key] !== undefined ? m1raw[key] :
+    const live1 = m1raw[key] !== undefined ? m1raw[key] :
                   (m1raw[resolveKey(key)] !== undefined ? m1raw[resolveKey(key)] : 0);
-    const m2val = m2raw[key] !== undefined ? m2raw[key] :
+    const live2 = m2raw[key] !== undefined ? m2raw[key] :
                   (m2raw[resolveKey(key)] !== undefined ? m2raw[resolveKey(key)] : 0);
+    // Always use the higher of live count vs verified baseline
+    const m1val = Math.max(live1, BASELINE_M1[key] || 0);
+    const m2val = Math.max(live2, BASELINE_M2[key] || 0);
     deptData[key] = { name:cfg.name, m1:m1val, m1d:cfg.d, m2:m2val, m2d:cfg.d };
   });
-  // Also absorb any extra keys from raw data not in config
   [...Object.keys(m1raw), ...Object.keys(m2raw)].forEach(rawKey => {
     const key = resolveKey(rawKey);
     if(DEPT_CONFIG[key] && !deptData[key]){
-      deptData[key] = { name:DEPT_CONFIG[key].name, m1:m1raw[rawKey]||0, m1d:DEPT_CONFIG[key].d, m2:m2raw[rawKey]||0, m2d:DEPT_CONFIG[key].d };
+      const live1 = m1raw[rawKey]||0;
+      const live2 = m2raw[rawKey]||0;
+      deptData[key] = { name:DEPT_CONFIG[key].name,
+        m1:Math.max(live1, BASELINE_M1[key]||0),
+        m1d:DEPT_CONFIG[key].d,
+        m2:Math.max(live2, BASELINE_M2[key]||0),
+        m2d:DEPT_CONFIG[key].d };
     }
   });
 }

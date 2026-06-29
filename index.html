@@ -3,932 +3,566 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EPSA IPC Training Dashboard – HTPN</title>
+<title>EPSA IPC Training Dashboard — HTPN</title>
 <style>
-:root{
-  --bg:#0a0f1e;
-  --bg2:#0d1424;
-  --card:#111827;
-  --card2:#1a2236;
-  --border:#1e2d45;
-  --teal:#00c9a7;
-  --teal-dim:#00c9a720;
-  --teal-glow:#00c9a740;
-  --orange:#f59e0b;
-  --orange-dim:#f59e0b20;
-  --red:#ef4444;
-  --red-dim:#ef444420;
-  --green:#10b981;
-  --green-dim:#10b98120;
-  --blue:#3b82f6;
-  --blue-dim:#3b82f620;
-  --purple:#8b5cf6;
-  --text:#e2e8f0;
-  --text2:#94a3b8;
-  --text3:#64748b;
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+  :root {
+    --bg: #0a0f1e;
+    --bg2: #0d1526;
+    --card: #111827;
+    --card2: #1a2235;
+    --border: #1e2d4a;
+    --accent: #3b82f6;
+    --accent2: #60a5fa;
+    --green: #10b981;
+    --yellow: #f59e0b;
+    --red: #ef4444;
+    --purple: #8b5cf6;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --glow: rgba(59,130,246,0.15);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; min-height: 100vh; }
 
-/* ANIMATED BG */
-body::before{
-  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
-  background:
-    radial-gradient(ellipse 80% 60% at 20% 0%,#00c9a715 0%,transparent 60%),
-    radial-gradient(ellipse 60% 50% at 80% 100%,#3b82f610 0%,transparent 60%),
-    radial-gradient(ellipse 50% 40% at 50% 50%,#8b5cf608 0%,transparent 70%);
-  pointer-events:none;z-index:0;
-}
+  /* Grid overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image: linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
 
-/* GRID BG */
-body::after{
-  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
-  background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
-  background-size:60px 60px;opacity:0.3;pointer-events:none;z-index:0;
-}
+  .container { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 24px 20px; }
 
-header{
-  position:relative;z-index:10;
-  background:rgba(10,15,30,0.95);
-  border-bottom:1px solid var(--border);
-  padding:14px 28px;
-  display:flex;align-items:center;gap:16px;
-  backdrop-filter:blur(20px);
-}
-.logo-box{
-  display:flex;align-items:center;gap:12px;
-}
-.logo{
-  width:44px;height:44px;border-radius:10px;
-  background:linear-gradient(135deg,var(--teal),#0097a7);
-  display:flex;align-items:center;justify-content:center;
-  font-weight:900;font-size:13px;color:#fff;
-  box-shadow:0 0 20px var(--teal-glow);
-  flex-shrink:0;
-}
-.logo-text h1{font-size:1.1rem;font-weight:800;color:var(--text);letter-spacing:0.3px;}
-.logo-text p{font-size:0.72rem;color:var(--text2);margin-top:1px;}
+  /* Header */
+  header { text-align: center; margin-bottom: 32px; }
+  header h1 { font-size: 1.9rem; font-weight: 700; color: #fff; letter-spacing: 1px; }
+  header h1 span { color: var(--accent2); }
+  header p { color: var(--text2); font-size: 0.85rem; margin-top: 6px; }
+  .live-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3);
+    color: var(--green); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem;
+    margin-top: 8px;
+  }
+  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-.header-tags{display:flex;gap:6px;align-items:center;margin-left:16px;}
-.htag{
-  background:var(--teal-dim);border:1px solid var(--teal);
-  color:var(--teal);font-size:0.65rem;font-weight:700;
-  padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;
-}
-.htag.org{background:var(--orange-dim);border-color:var(--orange);color:var(--orange);}
+  /* Status bar */
+  .status-bar {
+    background: var(--card2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 18px; margin-bottom: 24px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    font-size: 0.8rem; color: var(--text2);
+  }
+  .status-bar .refresh-btn {
+    background: var(--accent); border: none; color: #fff; padding: 5px 14px;
+    border-radius: 6px; cursor: pointer; font-size: 0.78rem; transition: opacity 0.2s;
+  }
+  .status-bar .refresh-btn:hover { opacity: 0.85; }
+  .status-bar .refresh-btn:disabled { opacity: 0.4; cursor: default; }
 
-.header-right{margin-left:auto;display:flex;gap:10px;align-items:center;}
-.target-badge{
-  background:var(--card2);border:1px solid var(--border);
-  border-radius:10px;padding:8px 14px;text-align:center;
-  min-width:130px;
-}
-.target-badge .tb-label{font-size:0.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;font-weight:700;}
-.target-badge .tb-val{font-size:0.82rem;font-weight:800;margin-top:2px;}
-.target-badge .tb-status{font-size:0.62rem;margin-top:2px;}
-.tb1 .tb-val{color:var(--teal);}
-.tb2 .tb-val{color:var(--orange);}
+  /* KPI row */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 28px; }
+  .kpi-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px 20px; position: relative; overflow: hidden;
+    transition: transform 0.2s;
+  }
+  .kpi-card:hover { transform: translateY(-2px); }
+  .kpi-card::before {
+    content: ''; position: absolute; inset: 0; opacity: 0.07;
+    background: radial-gradient(circle at 30% 30%, var(--kpi-color, var(--accent)), transparent 70%);
+  }
+  .kpi-label { font-size: 0.72rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.8px; }
+  .kpi-value { font-size: 2rem; font-weight: 700; color: var(--kpi-color, var(--accent2)); margin: 6px 0 4px; line-height: 1; }
+  .kpi-sub { font-size: 0.72rem; color: var(--text2); }
 
-/* MAIN */
-main{position:relative;z-index:5;padding:20px 28px;max-width:1700px;margin:0 auto;}
+  /* Filters */
+  .filters {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 20px; margin-bottom: 24px;
+    display: flex; gap: 14px; flex-wrap: wrap; align-items: center;
+  }
+  .filters label { font-size: 0.75rem; color: var(--text2); display: flex; flex-direction: column; gap: 5px; }
+  .filters select, .filters input {
+    background: var(--bg2); border: 1px solid var(--border); color: var(--text);
+    padding: 7px 12px; border-radius: 8px; font-size: 0.82rem; min-width: 140px;
+    outline: none; transition: border-color 0.2s;
+  }
+  .filters select:focus, .filters input:focus { border-color: var(--accent); }
+  .search-wrap { flex: 1; min-width: 180px; }
+  .search-wrap input { width: 100%; }
 
-/* SECTION HERO */
-.hero{margin-bottom:20px;}
-.hero-label{font-size:0.7rem;color:var(--teal);text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:6px;}
-.hero h2{font-size:1.9rem;font-weight:900;color:var(--text);letter-spacing:-0.5px;}
-.hero p{font-size:0.8rem;color:var(--text2);margin-top:4px;}
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .tab-btn {
+    background: none; border: none; color: var(--text2); padding: 10px 18px;
+    cursor: pointer; font-size: 0.85rem; border-bottom: 2px solid transparent;
+    transition: all 0.2s; margin-bottom: -1px;
+  }
+  .tab-btn.active { color: var(--accent2); border-bottom-color: var(--accent2); font-weight: 600; }
+  .tab-btn:hover:not(.active) { color: var(--text); }
 
-/* KPI CARDS */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:24px;}
-.kpi{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;padding:18px 20px;
-  position:relative;overflow:hidden;
-  transition:transform 0.2s,box-shadow 0.2s;
-}
-.kpi:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.4);}
-.kpi::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  border-radius:14px 14px 0 0;
-}
-.kpi.t::before{background:linear-gradient(90deg,var(--teal),#00e5cc);}
-.kpi.o::before{background:linear-gradient(90deg,var(--orange),#fbbf24);}
-.kpi.g::before{background:linear-gradient(90deg,var(--green),#34d399);}
-.kpi.p::before{background:linear-gradient(90deg,var(--purple),#a78bfa);}
-.kpi.r::before{background:linear-gradient(90deg,var(--red),#f87171);}
-.kpi.b::before{background:linear-gradient(90deg,var(--blue),#60a5fa);}
+  /* Dept cards */
+  .dept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; }
+  .dept-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 18px; transition: transform 0.2s, border-color 0.2s;
+  }
+  .dept-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .dept-card.complete { border-color: rgba(16,185,129,0.4); }
+  .dept-card.pending { border-color: rgba(245,158,11,0.3); }
+  .dept-name { font-weight: 600; font-size: 0.92rem; margin-bottom: 3px; }
+  .dept-denom { font-size: 0.73rem; color: var(--text2); margin-bottom: 12px; }
+  .dept-denom.missing { color: var(--yellow); }
+  .module-row { margin-bottom: 8px; }
+  .module-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text2); margin-bottom: 4px; }
+  .module-label .pct { font-weight: 700; }
+  .bar-bg { background: var(--bg2); border-radius: 4px; height: 7px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
+  .bar-m1 { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .bar-m2 { background: linear-gradient(90deg, var(--green), #34d399); }
 
-.kpi-icon{
-  width:36px;height:36px;border-radius:9px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:16px;margin-bottom:10px;
-}
-.kpi.t .kpi-icon{background:var(--teal-dim);}
-.kpi.o .kpi-icon{background:var(--orange-dim);}
-.kpi.g .kpi-icon{background:var(--green-dim);}
-.kpi.p .kpi-icon{background:#8b5cf620;}
-.kpi.r .kpi-icon{background:var(--red-dim);}
-.kpi.b .kpi-icon{background:var(--blue-dim);}
+  /* Table view */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  thead th {
+    background: var(--card2); color: var(--text2); font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.6px; padding: 10px 14px;
+    border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap;
+    cursor: pointer; user-select: none;
+  }
+  thead th:hover { color: var(--text); }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:hover { background: var(--card2); }
+  tbody td { padding: 10px 14px; }
+  .pct-cell { font-weight: 700; }
+  .pct-high { color: var(--green); }
+  .pct-mid { color: var(--yellow); }
+  .pct-low { color: var(--red); }
+  .pending-tag { font-size: 0.7rem; background: rgba(245,158,11,0.2); color: var(--yellow); padding: 2px 7px; border-radius: 4px; }
 
-.kpi-val{font-size:2rem;font-weight:900;line-height:1;}
-.kpi.t .kpi-val{color:var(--teal);}
-.kpi.o .kpi-val{color:var(--orange);}
-.kpi.g .kpi-val{color:var(--green);}
-.kpi.p .kpi-val{color:var(--purple);}
-.kpi.r .kpi-val{color:var(--red);}
-.kpi.b .kpi-val{color:var(--blue);}
+  /* By Role tab */
+  .role-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+  .role-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px;
+  }
+  .role-name { font-weight: 600; font-size: 0.88rem; margin-bottom: 12px; color: var(--accent2); }
 
-.kpi-label{font-size:0.72rem;color:var(--text2);font-weight:600;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.4px;}
-.kpi-sub{font-size:0.7rem;color:var(--text3);margin-top:5px;}
+  /* Loading / error */
+  .loading-state, .error-state {
+    text-align: center; padding: 60px 20px; color: var(--text2);
+  }
+  .spinner {
+    width: 40px; height: 40px; border: 3px solid var(--border);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .error-state { color: var(--red); }
 
-/* DONUT MINI */
-.kpi-donut{position:absolute;right:14px;top:14px;opacity:0.15;}
+  /* Timestamp info (config box) */
+  .config-notice {
+    background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25);
+    border-radius: 10px; padding: 14px 18px; font-size: 0.8rem;
+    color: var(--yellow); margin-bottom: 20px; display: none;
+  }
+  .config-notice.show { display: block; }
+  .config-notice code { background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 4px; font-size: 0.78rem; }
+  .config-input { display: flex; gap: 8px; margin-top: 8px; }
+  .config-input input {
+    flex: 1; background: var(--bg2); border: 1px solid var(--border); color: var(--text);
+    padding: 6px 10px; border-radius: 6px; font-size: 0.78rem;
+  }
+  .config-input button {
+    background: var(--yellow); color: #000; border: none; padding: 6px 14px;
+    border-radius: 6px; cursor: pointer; font-size: 0.78rem; font-weight: 600;
+  }
 
-/* FILTER PANEL */
-.filter-panel{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:16px 20px;
-  margin-bottom:18px;
-}
-.filter-title{font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;font-weight:700;margin-bottom:12px;}
-.filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
-
-.fg{display:flex;flex-direction:column;gap:5px;}
-.fg label{font-size:0.68rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;}
-.fg select,.fg input{
-  background:var(--bg2);
-  border:1px solid var(--border);
-  border-radius:8px;
-  padding:8px 12px;
-  font-size:0.82rem;
-  color:var(--text);
-  min-width:180px;
-  cursor:pointer;
-  transition:border-color 0.2s;
-}
-.fg select:focus,.fg input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-dim);}
-.fg select option{background:var(--card2);}
-
-.btn-reset{
-  padding:8px 18px;
-  background:transparent;
-  border:1px solid var(--border);
-  color:var(--text2);
-  border-radius:8px;
-  cursor:pointer;
-  font-size:0.8rem;
-  font-weight:600;
-  transition:all 0.2s;
-  align-self:flex-end;
-}
-.btn-reset:hover{border-color:var(--teal);color:var(--teal);}
-
-/* SORT + TABS */
-.controls-row{display:flex;gap:10px;align-items:center;margin-bottom:18px;flex-wrap:wrap;}
-.sort-label{font-size:0.7rem;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
-.tab-group{display:flex;gap:6px;flex-wrap:wrap;}
-.tab{
-  padding:7px 16px;
-  border-radius:8px;
-  border:1px solid var(--border);
-  background:transparent;
-  color:var(--text2);
-  font-size:0.78rem;
-  font-weight:700;
-  cursor:pointer;
-  transition:all 0.2s;
-}
-.tab:hover{border-color:var(--text2);}
-.tab.active-all{background:linear-gradient(135deg,var(--teal),#00a892);border-color:var(--teal);color:#000;}
-.tab.active-m1{background:linear-gradient(135deg,var(--teal),#00a892);border-color:var(--teal);color:#000;}
-.tab.active-m2{background:linear-gradient(135deg,var(--orange),#d97706);border-color:var(--orange);color:#000;}
-.tab.active-j{background:linear-gradient(135deg,var(--blue),#2563eb);border-color:var(--blue);color:#fff;}
-
-.sort-tabs{display:flex;gap:6px;}
-.stab{
-  padding:5px 12px;border-radius:6px;border:1px solid var(--border);
-  background:transparent;color:var(--text3);font-size:0.73rem;font-weight:600;cursor:pointer;transition:all 0.2s;
-}
-.stab.active{background:var(--card2);border-color:var(--text2);color:var(--text);}
-
-/* DEPT CARDS GRID */
-.dept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:24px;}
-.dept-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:16px 18px;
-  transition:transform 0.2s,box-shadow 0.2s,border-color 0.2s;
-  position:relative;overflow:hidden;
-}
-.dept-card:hover{transform:translateY(-2px);box-shadow:0 10px 40px rgba(0,0,0,0.5);border-color:var(--teal);}
-.dept-card::before{
-  content:'';position:absolute;top:0;left:0;width:4px;height:100%;
-  border-radius:14px 0 0 14px;
-}
-.dept-card.on-track::before{background:var(--green);}
-.dept-card.lagging::before{background:var(--orange);}
-.dept-card.critical::before{background:var(--red);}
-.dept-card.pending::before{background:var(--text3);}
-
-.dc-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
-.dc-name{font-size:0.9rem;font-weight:800;color:var(--text);line-height:1.2;}
-.dc-sub{font-size:0.65rem;color:var(--text3);margin-top:2px;text-transform:uppercase;letter-spacing:0.4px;}
-.status-pill{
-  padding:3px 9px;border-radius:20px;
-  font-size:0.62rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;
-  white-space:nowrap;flex-shrink:0;margin-left:8px;
-}
-.sp-on{background:var(--green-dim);color:var(--green);border:1px solid var(--green);}
-.sp-lag{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange);}
-.sp-crit{background:var(--red-dim);color:var(--red);border:1px solid var(--red);}
-.sp-pend{background:#64748b20;color:var(--text3);border:1px solid var(--text3);}
-.sp-full{background:var(--teal-dim);color:var(--teal);border:1px solid var(--teal);}
-
-.dc-denom{font-size:0.68rem;color:var(--text3);margin-bottom:10px;}
-.dc-denom strong{color:var(--text2);}
-
-.mod-row{margin-bottom:8px;}
-.mod-label-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
-.mod-label{font-size:0.68rem;color:var(--text2);font-weight:600;}
-.mod-nums{font-size:0.68rem;color:var(--text3);}
-.mod-pct{font-size:0.75rem;font-weight:800;}
-.m1pct{color:var(--teal);}
-.m2pct{color:var(--orange);}
-.prog{height:6px;background:var(--bg2);border-radius:3px;overflow:hidden;}
-.prog-fill{height:100%;border-radius:3px;transition:width 0.6s ease;}
-.pf-m1{background:linear-gradient(90deg,var(--teal),#00e5cc);}
-.pf-m2{background:linear-gradient(90deg,var(--orange),#fbbf24);}
-.pf-full{background:linear-gradient(90deg,var(--teal),var(--green));}
-.prog-pending{font-size:0.65rem;color:var(--text3);font-style:italic;height:6px;line-height:6px;}
-
-/* TABLE VIEW */
-.table-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  overflow:hidden;
-  margin-bottom:20px;
-}
-.table-card-head{
-  background:var(--card2);
-  padding:12px 18px;
-  font-size:0.8rem;font-weight:700;
-  display:flex;align-items:center;gap:10px;
-  border-bottom:1px solid var(--border);
-}
-table{width:100%;border-collapse:collapse;}
-thead th{
-  background:var(--bg2);
-  padding:10px 14px;
-  font-size:0.67rem;font-weight:700;text-transform:uppercase;
-  letter-spacing:0.4px;color:var(--text3);text-align:left;
-  border-bottom:1px solid var(--border);white-space:nowrap;
-}
-th.r,td.r{text-align:right;}
-tbody tr{border-bottom:1px solid var(--border);transition:background 0.15s;}
-tbody tr:hover{background:var(--card2);}
-tbody tr:last-child{border-bottom:none;}
-tbody td{padding:10px 14px;font-size:0.8rem;vertical-align:middle;}
-.dn{font-weight:700;color:var(--text);}
-.ds{font-size:0.65rem;color:var(--text3);margin-top:1px;}
-
-.pw{display:flex;align-items:center;gap:8px;}
-.pb{flex:1;height:7px;background:var(--bg2);border-radius:4px;overflow:hidden;min-width:80px;}
-.pf{height:100%;border-radius:4px;}
-.pp{font-size:0.72rem;font-weight:800;min-width:44px;text-align:right;}
-.pend-txt{font-size:0.68rem;color:var(--text3);font-style:italic;}
-
-/* CHART BARS */
-.chart-wrap{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:14px;padding:18px 20px;margin-bottom:20px;
-}
-.chart-title{font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-.chart-pill{background:var(--teal-dim);color:var(--teal);font-size:0.62rem;padding:2px 8px;border-radius:10px;font-weight:700;}
-.chart-pill.o{background:var(--orange-dim);color:var(--orange);}
-
-.bc{display:flex;flex-direction:column;gap:8px;}
-.br2{display:flex;align-items:center;gap:10px;}
-.bl{width:200px;font-size:0.73rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;}
-.bcon{flex:1;height:18px;background:var(--bg2);border-radius:4px;position:relative;overflow:hidden;min-width:100px;}
-.bf1{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--teal),#00e5cc);border-radius:4px;}
-.bf2{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--orange),#fbbf24);border-radius:4px;}
-.bpl{width:46px;font-size:0.7rem;font-weight:800;text-align:right;flex-shrink:0;}
-.bcnt{width:55px;font-size:0.65rem;color:var(--text3);flex-shrink:0;}
-
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-@media(max-width:900px){.two-col{grid-template-columns:1fr;}}
-
-/* NOTE */
-.note{
-  background:linear-gradient(135deg,#1a1a2e,#16213e);
-  border:1px solid var(--orange);
-  border-left:4px solid var(--orange);
-  border-radius:10px;padding:10px 14px;
-  font-size:0.74rem;color:#fcd34d;
-  margin-bottom:16px;line-height:1.6;
-}
-
-/* SECTION HEADING */
-.sec{
-  font-size:0.8rem;font-weight:800;color:var(--text);
-  margin-bottom:12px;display:flex;align-items:center;gap:8px;
-  text-transform:uppercase;letter-spacing:0.5px;
-}
-
-/* JAWATAN */
-.jaw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:20px;}
-.jaw-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:12px;padding:14px 16px;
-  transition:border-color 0.2s;
-}
-.jaw-card:hover{border-color:var(--blue);}
-.jc-name{font-size:0.82rem;font-weight:700;color:var(--text);margin-bottom:6px;}
-.jc-total{font-size:1.4rem;font-weight:900;color:var(--blue);line-height:1;}
-.jc-sub{font-size:0.65rem;color:var(--text3);margin-top:2px;margin-bottom:8px;}
-.jc-depts{display:flex;flex-wrap:wrap;gap:3px;}
-.jc-dtag{background:var(--bg2);border:1px solid var(--border);color:var(--text3);font-size:0.62rem;padding:2px 6px;border-radius:5px;}
-
-/* GLOW EFFECT on high pct */
-.glow-teal{text-shadow:0 0 10px var(--teal);}
-.glow-orange{text-shadow:0 0 10px var(--orange);}
-
-/* TIMESTAMP */
-.ts{font-size:0.67rem;color:var(--text3);text-align:right;margin-bottom:14px;}
-
-footer{
-  position:relative;z-index:5;
-  background:var(--card2);border-top:1px solid var(--border);
-  text-align:center;padding:14px;font-size:0.7rem;color:var(--text3);
-}
-footer strong{color:var(--text2);}
-
-/* RESPONSIVE */
-@media(max-width:640px){
-  .kpi-grid{grid-template-columns:1fr 1fr;}
-  .dept-grid{grid-template-columns:1fr;}
-  main{padding:14px 16px;}
-  header{padding:12px 16px;}
-  .header-right{display:none;}
-}
-
-/* EMPTY STATE */
-.empty-state{
-  text-align:center;padding:60px 20px;color:var(--text3);
-  border:2px dashed var(--border);border-radius:14px;
-}
-.empty-state svg{opacity:0.3;margin-bottom:12px;}
-.empty-state p{font-size:0.85rem;}
+  .empty-msg { text-align: center; padding: 40px; color: var(--text2); font-size: 0.85rem; }
+  .sort-arrow { font-size: 0.65rem; margin-left: 4px; }
 </style>
 </head>
 <body>
+<div class="container">
 
-<header>
-  <div class="logo-box">
-    <div class="logo">HTPN</div>
-    <div class="logo-text">
-      <h1>EPSA IPC Module Training Dashboard</h1>
-      <p>Hospital Tengku Permaisuri Norashikin · Unit Pencegahan &amp; Kawalan Infeksi</p>
-    </div>
-  </div>
-  <div class="header-tags">
-    <span class="htag">IPC Compliance</span>
-    <span class="htag">EPSA</span>
-    <span class="htag org">MSQH</span>
-  </div>
-  <div class="header-right">
-    <div class="target-badge tb1">
-      <div class="tb-label">Modul 1 Target</div>
-      <div class="tb-val">Jan – Mar 2026</div>
-      <div class="tb-status" style="color:var(--text3)">⏱ Period closed</div>
-    </div>
-    <div class="target-badge tb2">
-      <div class="tb-label">Modul 2 Target</div>
-      <div class="tb-val">Apr – Jun 2026</div>
-      <div class="tb-status" style="color:var(--orange)">⚡ In progress</div>
-    </div>
-  </div>
-</header>
+  <header>
+    <h1>EPSA IPC Training Dashboard — <span>HTPN</span></h1>
+    <p>Hospital Tengku Permaisuri Norashikin | Infection Prevention & Control Unit</p>
+    <div class="live-badge"><span class="live-dot"></span> LIVE — Real-time from Google Sheets</div>
+  </header>
 
-<main>
-  <div class="ts">📊 Data computed with duplicate removal · Each HCW counted once per module · Last updated: June 2026</div>
-
-  <!-- KPI -->
-  <div id="kpiRow" class="kpi-grid"></div>
-
-  <!-- NOTE -->
-  <div class="note">
-    ⚠ <strong>Note:</strong> Departments marked <em>PENDING</em> (Medical, Orthopaedics) have not submitted their full staff roster (denominator). Percentages will be calculated once submitted. Pathology &amp; Forensic show &gt;100% due to denominator discrepancy — currently under review.
-  </div>
-
-  <!-- FILTER PANEL -->
-  <div class="filter-panel">
-    <div class="filter-title">🔍 Filter &amp; View Options</div>
-    <div class="filter-row">
-      <div class="fg">
-        <label>Module</label>
-        <select id="fm" onchange="applyF()">
-          <option value="all">All Modules</option>
-          <option value="1">Modul 1 · Jan–Mar 2026</option>
-          <option value="2">Modul 2 · Apr–Jun 2026</option>
-        </select>
-      </div>
-      <div class="fg">
-        <label>Department</label>
-        <select id="fd" onchange="applyF()">
-          <option value="all">All Departments</option>
-        </select>
-      </div>
-      <div class="fg">
-        <label>Jawatan (Role)</label>
-        <select id="fj" onchange="applyF()">
-          <option value="all">All Roles</option>
-        </select>
-      </div>
-      <div class="fg">
-        <label>Search</label>
-        <input type="text" id="fs" placeholder="Search department…" oninput="applyF()">
-      </div>
-      <button class="btn-reset" onclick="resetF()">↺ Reset</button>
+  <!-- Apps Script URL config notice (shown if URL not set) -->
+  <div class="config-notice" id="configNotice">
+    ⚙️ <strong>Setup required:</strong> Paste your Google Apps Script Web App URL below to enable real-time data.
+    <small style="display:block;margin-top:4px;color:var(--text2)">
+      In your Google Sheet → Extensions → Apps Script → Deploy → New Deployment → Web App → Execute as: Me → Anyone → Deploy → Copy URL
+    </small>
+    <div class="config-input">
+      <input type="text" id="appsScriptUrl" placeholder="https://script.google.com/macros/s/YOUR_ID/exec" />
+      <button onclick="saveUrl()">Save & Load</button>
     </div>
   </div>
 
-  <!-- TAB ROW -->
-  <div class="controls-row">
-    <span class="sort-label">View:</span>
-    <div class="tab-group" id="tabGrp">
-      <button class="tab active-all" onclick="setTab('all',this)">📋 Overview</button>
-      <button class="tab" onclick="setTab('1',this)">🟢 Modul 1</button>
-      <button class="tab" onclick="setTab('2',this)">🟠 Modul 2</button>
-      <button class="tab" onclick="setTab('j',this)">👤 By Role</button>
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span id="statusText">Loading data…</span>
+    <span id="lastUpdated" style="color:var(--text2)"></span>
+    <button class="refresh-btn" id="refreshBtn" onclick="loadData()" disabled>↻ Refresh</button>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid" id="kpiGrid">
+    <div class="kpi-card" style="--kpi-color:var(--accent2)">
+      <div class="kpi-label">M1 Overall Compliance</div>
+      <div class="kpi-value" id="kpi-m1">—</div>
+      <div class="kpi-sub" id="kpi-m1-sub">Jan–Mar 2026</div>
     </div>
-    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
-      <span class="sort-label">Sort:</span>
-      <div class="sort-tabs">
-        <button class="stab active" id="sn" onclick="setSort('name',this)">Name</button>
-        <button class="stab" id="sp" onclick="setSort('pct',this)">% Complete</button>
-        <button class="stab" id="ss" onclick="setSort('submitted',this)">Submitted</button>
-      </div>
+    <div class="kpi-card" style="--kpi-color:var(--green)">
+      <div class="kpi-label">M2 Overall Compliance</div>
+      <div class="kpi-value" id="kpi-m2">—</div>
+      <div class="kpi-sub" id="kpi-m2-sub">Apr–Jun 2026</div>
+    </div>
+    <div class="kpi-card" style="--kpi-color:var(--purple)">
+      <div class="kpi-label">Depts ≥80% Both Modules</div>
+      <div class="kpi-value" id="kpi-depts">—</div>
+      <div class="kpi-sub">On Track</div>
+    </div>
+    <div class="kpi-card" style="--kpi-color:var(--yellow)">
+      <div class="kpi-label">M1 Remaining</div>
+      <div class="kpi-value" id="kpi-rem1">—</div>
+      <div class="kpi-sub">staff not yet submitted</div>
+    </div>
+    <div class="kpi-card" style="--kpi-color:var(--red)">
+      <div class="kpi-label">M2 Remaining</div>
+      <div class="kpi-value" id="kpi-rem2">—</div>
+      <div class="kpi-sub">staff not yet submitted</div>
+    </div>
+    <div class="kpi-card" style="--kpi-color:var(--yellow)">
+      <div class="kpi-label">Missing Denominator</div>
+      <div class="kpi-value" id="kpi-miss">—</div>
+      <div class="kpi-sub">depts (roster pending)</div>
     </div>
   </div>
 
-  <!-- MAIN CONTENT -->
-  <div id="mc"></div>
-</main>
+  <!-- Filters -->
+  <div class="filters">
+    <label>Module
+      <select id="filterModule" onchange="renderView()">
+        <option value="all">All Modules</option>
+        <option value="m1">Modul 1 (Jan–Mar)</option>
+        <option value="m2">Modul 2 (Apr–Jun)</option>
+      </select>
+    </label>
+    <label>Department
+      <select id="filterDept" onchange="renderView()">
+        <option value="all">All Departments</option>
+      </select>
+    </label>
+    <label>Status
+      <select id="filterStatus" onchange="renderView()">
+        <option value="all">All Status</option>
+        <option value="complete">100% Complete</option>
+        <option value="on_track">≥80% On Track</option>
+        <option value="below">Below 80%</option>
+        <option value="pending">Pending Denominator</option>
+      </select>
+    </label>
+    <label class="search-wrap">Search
+      <input type="text" id="searchInput" placeholder="Search department…" oninput="renderView()" />
+    </label>
+  </div>
 
-<footer>
-  <strong>Unit Pencegahan &amp; Kawalan Infeksi (IPCU) – HTPN</strong> &nbsp;·&nbsp;
-  EPSA IPC Training Compliance Dashboard &nbsp;·&nbsp; MSQH Accreditation Requirement &nbsp;·&nbsp;
-  Jan–Jun 2026 &nbsp;·&nbsp; Duplicates removed — each HCW counted once per module
-</footer>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('overview', this)">Overview</button>
+    <button class="tab-btn" onclick="switchTab('modul1', this)">Modul 1 Detail</button>
+    <button class="tab-btn" onclick="switchTab('modul2', this)">Modul 2 Detail</button>
+    <button class="tab-btn" onclick="switchTab('byrole', this)">By Jawatan</button>
+  </div>
+
+  <!-- Tab content -->
+  <div id="tab-overview"><div class="loading-state"><div class="spinner"></div><p>Loading…</p></div></div>
+  <div id="tab-modul1" style="display:none"></div>
+  <div id="tab-modul2" style="display:none"></div>
+  <div id="tab-byrole" style="display:none"></div>
+
+</div>
 
 <script>
 // ============================================================
-// DATA — Verified from masterlists (duplicates removed)
-// M1: PIVOT TABLE MODULE 1 grand totals (MODUL 1 MASTERLIST deduplicated)
-// M2: TEST MASTERLIST 2 TOTAL SUBMITTED column
-// Denominator: TEST MASTERLIST 2 TOTAL DENOMINATOR column
+// CONFIG — replace with your deployed Apps Script URL
 // ============================================================
-const DEPTS = [
-  {id:"ANAEST",              lab:"Anaesthesiology",         sub:"ANAEST",                 denom:198,  m1:41,  m2:28},
-  {id:"DIETETIK",            lab:"Dietetics",               sub:"DIETETIK",               denom:27,   m1:27,  m2:27},
-  {id:"FARMASI",             lab:"Pharmacy",                sub:"FARMASI",                denom:114,  m1:106, m2:50},
-  {id:"fisioterapi",         lab:"Physiotherapy",           sub:"FISIOTERAPI",            denom:18,   m1:17,  m2:8 },
-  {id:"forensic",            lab:"Forensic",                sub:"FORENSIC",               denom:13,   m1:13,  m2:14},
-  {id:"KECEMASAN",           lab:"Emergency (ED)",          sub:"KECEMASAN",              denom:213,  m1:13,  m2:12},
-  {id:"MEDICAL",             lab:"Medical",                 sub:"MEDICAL",                denom:null, m1:52,  m2:45},
-  {id:"O&G",                 lab:"Obstetrics & Gynaecology",sub:"O&G",                   denom:213,  m1:129, m2:83},
-  {id:"OMFS",                lab:"Oral & Maxillofacial Surgery",sub:"OMFS",              denom:25,   m1:17,  m2:13},
-  {id:"ORTOPEDIK",           lab:"Orthopaedics",            sub:"ORTOPEDIK",             denom:null, m1:5,   m2:5 },
-  {id:"PATHOLOGY",           lab:"Pathology",               sub:"PATHOLOGY",             denom:84,   m1:90,  m2:50},
-  {id:"PEDIATRIK",           lab:"Paediatrics",             sub:"PEDIATRIK",             denom:251,  m1:150, m2:50},
-  {id:"PEMBEDAHAN",          lab:"General Surgery",         sub:"PEMBEDAHAN",            denom:120,  m1:4,   m2:2 },
-  {id:"PENGURUSAN",          lab:"Administration",          sub:"PENGURUSAN",            denom:40,   m1:11,  m2:8 },
-  {id:"PERGIGIAN PEDIATRIK", lab:"Paediatric Dentistry",   sub:"PERGIGIAN PEDIATRIK",   denom:28,   m1:28,  m2:23},
-  {id:"PSIKIATRI",           lab:"Psychiatry",              sub:"PSIKIATRI",             denom:61,   m1:12,  m2:7 },
-  {id:"RADIOLOGI",           lab:"Radiology",               sub:"RADIOLOGI",             denom:59,   m1:6,   m2:5 },
-  {id:"SPECIAL CARE DENTISTRY",lab:"Special Care Dentistry",sub:"SPECIAL CARE DENTISTRY",denom:14,  m1:3,   m2:1 },
-  {id:"TERAPI CARA KERJA",   lab:"Occupational Therapy",   sub:"TERAPI CARA KERJA",     denom:21,   m1:16,  m2:21},
-];
+const LOCAL_STORAGE_KEY = 'epsa_apps_script_url';
+let APPS_SCRIPT_URL = localStorage.getItem(LOCAL_STORAGE_KEY) || '';
 
-const JAW_M1 = {
-  "DOKTOR":                         {ANAEST:22,forensic:10,KECEMASAN:11,MEDICAL:29,"O&G":16,OMFS:6,ORTOPEDIK:3,PATHOLOGY:22,PEDIATRIK:39,PEMBEDAHAN:1,PENGURUSAN:6,"PERGIGIAN PEDIATRIK":12,PSIKIATRI:5,RADIOLOGI:5,"SPECIAL CARE DENTISTRY":1},
-  "JURURAWAT":                      {ANAEST:15,KECEMASAN:2,MEDICAL:21,"O&G":104,OMFS:2,ORTOPEDIK:2,PEDIATRIK:100,PEMBEDAHAN:2,PENGURUSAN:3,"PERGIGIAN PEDIATRIK":1,PSIKIATRI:6,FARMASI:1},
-  "PEGAWAI FARMASI":                {FARMASI:102},
-  "PEGAWAI DIETETIK":               {DIETETIK:9},
-  "PEGAWAI PENYEDIAAN MAKANAN":     {DIETETIK:9},
-  "PEMBANTU PENYEDIAAN MAKANAN":    {DIETETIK:8},
-  "JURUPULIH CARAKERJA":            {"TERAPI CARA KERJA":15},
-  "JURUPULIH FISIOTERAPI":          {fisioterapi:15},
-  "JURUTEKNOLOGI MAKMAL PERUBATAN": {PATHOLOGY:49},
-  "PEGAWAI SAINS":                  {PATHOLOGY:15},
-  "PEMBANTU PERAWATAN PESAKIT":     {ANAEST:4,fisioterapi:2,forensic:3,MEDICAL:2,"O&G":9,OMFS:1,PATHOLOGY:4,PEDIATRIK:11,PEMBEDAHAN:1,"TERAPI CARA KERJA":1},
-  "PEMBANTU PEMBEDAHAN PERGIGIAN":  {OMFS:6,"PERGIGIAN PEDIATRIK":9,"SPECIAL CARE DENTISTRY":2},
-  "JURUTEKNOLOGI PERGIGIAN":        {OMFS:2,"PERGIGIAN PEDIATRIK":2},
-  "JURUTERAPI PERGIGIAN":           {"PERGIGIAN PEDIATRIK":1},
-  "PENOLONG PEGAWAI FARMASI":       {FARMASI:3},
-  "PEGAWAI PSIKOLOGI KLINIKAL":     {PSIKIATRI:1},
-  "JURU XRAY":                      {RADIOLOGI:1},
-  "LAIN-LAIN":                      {DIETETIK:1,PENGURUSAN:2,"PERGIGIAN PEDIATRIK":1},
-};
-const JAW_M2 = {
-  "DOKTOR":                         {ANAEST:18,forensic:9,KECEMASAN:8,MEDICAL:26,"O&G":5,OMFS:4,ORTOPEDIK:3,PATHOLOGY:17,PEDIATRIK:3,PEMBEDAHAN:1,PENGURUSAN:6,"PERGIGIAN PEDIATRIK":9,PSIKIATRI:1,RADIOLOGI:4},
-  "JURURAWAT":                      {ANAEST:6,KECEMASAN:2,MEDICAL:18,"O&G":66,OMFS:2,ORTOPEDIK:2,PEDIATRIK:42,PEMBEDAHAN:1,PENGURUSAN:1,"PERGIGIAN PEDIATRIK":1,PSIKIATRI:5,FARMASI:1},
-  "PEGAWAI FARMASI":                {FARMASI:44},
-  "PEGAWAI DIETETIK":               {DIETETIK:9},
-  "PEGAWAI PENYEDIAAN MAKANAN":     {DIETETIK:5},
-  "PEMBANTU PENYEDIAAN MAKANAN":    {DIETETIK:7},
-  "JURUPULIH CARAKERJA":            {"TERAPI CARA KERJA":17},
-  "JURUPULIH FISIOTERAPI":          {fisioterapi:7},
-  "JURUTEKNOLOGI MAKMAL PERUBATAN": {PATHOLOGY:18},
-  "PEGAWAI SAINS":                  {PATHOLOGY:7},
-  "PEMBANTU PERAWATAN PESAKIT":     {ANAEST:2,fisioterapi:1,forensic:3,MEDICAL:1,"O&G":5,OMFS:1,PATHOLOGY:1,PEDIATRIK:4,"TERAPI CARA KERJA":1},
-  "PEMBANTU PEMBEDAHAN PERGIGIAN":  {OMFS:4,"PERGIGIAN PEDIATRIK":8},
-  "JURUTEKNOLOGI PERGIGIAN":        {OMFS:2,"PERGIGIAN PEDIATRIK":2},
-  "JURUTERAPI PERGIGIAN":           {"PERGIGIAN PEDIATRIK":1},
-  "PENOLONG PEGAWAI FARMASI":       {FARMASI:1},
-  "LAIN-LAIN":                      {DIETETIK:6,PATHOLOGY:1,PENGURUSAN:1,"PERGIGIAN PEDIATRIK":1},
-};
-
-// ============================================================
-// STATE
-// ============================================================
-let curTab='all', curMod='all', curDept='all', curJaw='all', srch='', sortBy='name';
-
-// ============================================================
-// HELPERS
-// ============================================================
-function pct(n,d){if(!d)return null; return Math.round(n/d*1000)/10;}
-function capW(p){if(p===null)return 0; return Math.min(p,100);}
-
-function statusInfo(p1,p2,hasDenom){
-  if(!hasDenom) return {cls:'pending',pill:'sp-pend',txt:'Pending'};
-  const p = Math.max(p1||0, p2||0);
-  if((p1||0)>=100 && (p2||0)>=100) return {cls:'on-track',pill:'sp-full',txt:'100% ✓'};
-  if(p>=80) return {cls:'on-track',pill:'sp-on',txt:'On Track'};
-  if(p>=40) return {cls:'lagging',pill:'sp-lag',txt:'Lagging'};
-  return {cls:'critical',pill:'sp-crit',txt:'Critical'};
-}
-
-function pbar(p,cls,col){
-  if(p===null) return '<div class="prog"><div class="prog-pending">Pending denominator</div></div>';
-  return `<div class="prog"><div class="prog-fill ${cls}" style="width:${capW(p)}%"></div></div>`;
-}
-
-function badge_pct(p,cls){
-  if(p===null) return '<span style="color:var(--text3);font-size:0.68rem;font-style:italic">PENDING</span>';
-  const glow = p>=100?'glow-teal':'';
-  return `<span class="mod-pct ${cls} ${glow}">${p}%</span>`;
-}
-
-// ============================================================
-// FILTER
-// ============================================================
-function filteredDepts(){
-  let list = DEPTS.filter(d=>{
-    if(curDept!=='all' && d.id!==curDept) return false;
-    if(srch && !d.lab.toLowerCase().includes(srch.toLowerCase()) && !d.sub.toLowerCase().includes(srch.toLowerCase())) return false;
-    // If jawatan filter is set, only show depts where that jawatan has data for current module
-    if(curJaw!=='all'){
-      const jd = curMod==='2' ? (JAW_M2[curJaw]||{}) : (JAW_M1[curJaw]||{});
-      // show dept if jawatan has completions there
-      if(!jd[d.id] || jd[d.id]===0) return false;
-    }
-    return true;
-  });
-
-  // Sort
-  list.sort((a,b)=>{
-    if(sortBy==='name') return a.lab.localeCompare(b.lab);
-    if(sortBy==='pct'){
-      const k = curMod==='2'?'m2':'m1';
-      const pa=pct(a[k],a.denom), pb=pct(b[k],b.denom);
-      if(pa===null&&pb===null)return 0;
-      if(pa===null)return 1; if(pb===null)return -1;
-      return pb-pa;
-    }
-    if(sortBy==='submitted'){
-      const k=curMod==='2'?'m2':'m1';
-      return b[k]-a[k];
-    }
-    return 0;
-  });
-  return list;
-}
-
-// ============================================================
-// RENDER KPI (always full dataset)
-// ============================================================
-function renderKPI(){
-  const kd = DEPTS.filter(d=>d.denom);
-  const totalDenom = kd.reduce((s,d)=>s+d.denom,0);
-  const totalM1 = DEPTS.reduce((s,d)=>s+d.m1,0);
-  const totalM2 = DEPTS.reduce((s,d)=>s+d.m2,0);
-  const p1 = totalDenom? Math.round(totalM1/totalDenom*1000)/10:0;
-  const p2 = totalDenom? Math.round(totalM2/totalDenom*1000)/10:0;
-  const onTrack = DEPTS.filter(d=>d.denom && pct(d.m1,d.denom)>=80).length;
-  const pending = DEPTS.filter(d=>!d.denom).length;
-  const remain1 = kd.reduce((s,d)=>s+Math.max(d.denom-d.m1,0),0);
-  const remain2 = kd.reduce((s,d)=>s+Math.max(d.denom-d.m2,0),0);
-
-  document.getElementById('kpiRow').innerHTML=`
-    <div class="kpi t">
-      <div class="kpi-label">Modul 1 Overall</div>
-      <div class="kpi-val">${p1}%</div>
-      <div class="kpi-sub">${totalM1.toLocaleString()} / ${totalDenom.toLocaleString()} staff</div>
-    </div>
-    <div class="kpi o">
-      <div class="kpi-label">Modul 2 Overall</div>
-      <div class="kpi-val">${p2}%</div>
-      <div class="kpi-sub">${totalM2.toLocaleString()} / ${totalDenom.toLocaleString()} staff</div>
-    </div>
-    <div class="kpi g">
-      <div class="kpi-label">Depts On Track</div>
-      <div class="kpi-val">${onTrack}</div>
-      <div class="kpi-sub">≥80% completion (Modul 1)</div>
-    </div>
-    <div class="kpi r">
-      <div class="kpi-label">Remaining Modul 1</div>
-      <div class="kpi-val">${remain1.toLocaleString()}</div>
-      <div class="kpi-sub">Staff yet to complete (known depts)</div>
-    </div>
-    <div class="kpi b">
-      <div class="kpi-label">Remaining Modul 2</div>
-      <div class="kpi-val">${remain2.toLocaleString()}</div>
-      <div class="kpi-sub">Staff yet to complete (known depts)</div>
-    </div>
-    <div class="kpi p">
-      <div class="kpi-label">Missing Denominator</div>
-      <div class="kpi-val">${pending}</div>
-      <div class="kpi-sub">Medical, Orthopaedics<br><span style="color:var(--red);font-size:0.62rem">⚠ % cannot be calculated</span></div>
-    </div>
-  `;
-}
-
-// ============================================================
-// MAIN CONTENT
-// ============================================================
-function renderContent(){
-  const el = document.getElementById('mc');
-  const depts = filteredDepts();
-
-  if(depts.length===0){
-    el.innerHTML=`<div class="empty-state">
-      <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      <p>No departments match your current filters.<br>Try adjusting the filters above.</p>
-    </div>`;
-    return;
-  }
-
-  if(curTab==='all') renderAll(el,depts);
-  else if(curTab==='1') renderMod(el,depts,1);
-  else if(curTab==='2') renderMod(el,depts,2);
-  else renderJaw(el);
-}
-
-// ---- ALL OVERVIEW ----
-function renderAll(el,depts){
-  const cards = depts.map(d=>{
-    const p1=pct(d.m1,d.denom), p2=pct(d.m2,d.denom);
-    const si=statusInfo(p1,p2,!!d.denom);
-    const denStr=d.denom?`<strong>${d.denom.toLocaleString()}</strong> staff`:`<span style="color:var(--orange)">Denominator pending</span>`;
-    const m1pf = (p1!==null&&p1>=100)?'pf-full':'pf-m1';
-    const m2pf = (p2!==null&&p2>=100)?'pf-full':'pf-m2';
-    return `<div class="dept-card ${si.cls}">
-      <div class="dc-head">
-        <div><div class="dc-name">${d.lab}</div><div class="dc-sub">${d.sub}</div></div>
-        <span class="status-pill ${si.pill}">${si.txt}</span>
-      </div>
-      <div class="dc-denom">Total Staff: ${denStr}</div>
-      <div class="mod-row">
-        <div class="mod-label-row">
-          <span class="mod-label">Modul 1 · Jan–Mar 2026</span>
-          <span class="mod-nums">${d.m1}/${d.denom||'?'} &nbsp; ${badge_pct(p1,'m1pct')}</span>
-        </div>
-        ${pbar(p1,m1pf,'teal')}
-      </div>
-      <div class="mod-row" style="margin-bottom:0">
-        <div class="mod-label-row">
-          <span class="mod-label">Modul 2 · Apr–Jun 2026</span>
-          <span class="mod-nums">${d.m2}/${d.denom||'?'} &nbsp; ${badge_pct(p2,'m2pct')}</span>
-        </div>
-        ${pbar(p2,m2pf,'orange')}
-      </div>
-    </div>`;
-  }).join('');
-
-  el.innerHTML=`
-    <div class="sec">📊 Department Compliance Overview</div>
-    <div class="dept-grid">${cards}</div>
-    ${renderBothCharts(depts)}
-  `;
-}
-
-// ---- MODULE DETAIL ----
-function renderMod(el,depts,mn){
-  const col=mn===1?'var(--teal)':'var(--orange)';
-  const key=mn===1?'m1':'m2';
-  const period=mn===1?'Jan – Mar 2026':'Apr – Jun 2026';
-  const pfCls=mn===1?'pf-m1':'pf-m2';
-
-  const td=depts.reduce((s,d)=>s+d[key],0);
-  const tkd=depts.filter(d=>d.denom).reduce((s,d)=>s+d.denom,0);
-  const tr=tkd-depts.filter(d=>d.denom).reduce((s,d)=>s+d[key],0);
-  const op=tkd?Math.round(td/tkd*1000)/10:0;
-
-  const rows=depts.map(d=>{
-    const cnt=d[key], p=pct(cnt,d.denom);
-    const den=d.denom?d.denom.toLocaleString():`<span style="color:var(--orange);font-size:0.72rem">PENDING</span>`;
-    const rem=d.denom?Math.max(d.denom-cnt,0):'—';
-    const pf=(p!==null&&p>=100)?'pf-full':pfCls;
-    return `<tr>
-      <td><div class="dn">${d.lab}</div><div class="ds">${d.sub}</div></td>
-      <td class="r">${den}</td>
-      <td class="r" style="color:${col};font-weight:800">${cnt}</td>
-      <td class="r" style="color:var(--red)">${rem}</td>
-      <td>
-        ${p!==null
-          ?`<div class="pw"><div class="pb"><div class="pf ${pf}" style="width:${capW(p)}%"></div></div><span class="pp" style="color:${col}">${p}%</span></div>`
-          :`<span class="pend-txt">Pending denominator</span>`}
-      </td>
-      <td>
-        ${p===null?'<span class="status-pill sp-pend" style="font-size:0.62rem">PENDING</span>'
-          :p>=100?'<span class="status-pill sp-full">✔ 100%</span>'
-          :p>=80?'<span class="status-pill sp-on">On Track</span>'
-          :p>=40?'<span class="status-pill sp-lag">Lagging</span>'
-          :'<span class="status-pill sp-crit">Critical</span>'}
-      </td>
-    </tr>`;
-  }).join('');
-
-  el.innerHTML=`
-    <div class="kpi-grid" style="margin-bottom:16px">
-      <div class="kpi ${mn===1?'t':'o'}">
-        <div class="kpi-label">Total Completed</div>
-        <div class="kpi-val">${td.toLocaleString()}</div>
-        <div class="kpi-sub">Unique HCW (deduplicated)</div>
-      </div>
-      <div class="kpi ${mn===1?'t':'o'}">
-        <div class="kpi-label">Known Denominator</div>
-        <div class="kpi-val">${tkd.toLocaleString()}</div>
-        <div class="kpi-sub">Staff in ${depts.filter(d=>d.denom).length} reporting depts</div>
-      </div>
-      <div class="kpi ${mn===1?'t':'o'}">
-        <div class="kpi-label">Overall %</div>
-        <div class="kpi-val">${op}%</div>
-        <div class="kpi-sub">Of known denominator</div>
-      </div>
-      <div class="kpi r">
-        <div class="kpi-label">Remaining</div>
-        <div class="kpi-val">${tr.toLocaleString()}</div>
-        <div class="kpi-sub">HCW yet to complete</div>
-      </div>
-    </div>
-    <div class="sec">${mn===1?'🟢':'🟠'} Module ${mn}: ${mn===1?'Modul 1 : Pengenalan kepada pencegahan dan kawalan infeksi atau Infection Prevention & Control':'Modul 2 : Kebersihan Tangan (Hand Hygiene)'} · ${period}</div>
-    <div class="table-card">
-      <div class="table-card-head" style="border-left:4px solid ${col}">
-        Module ${mn} Completion by Department · ${period}
-      </div>
-      <table>
-        <thead><tr>
-          <th>Department</th><th class="r">Denominator</th>
-          <th class="r">Completed</th><th class="r">Remaining</th>
-          <th>Progress</th><th>Status</th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>
-    ${renderSingleChart(depts,mn,col,pfCls)}
-  `;
-}
-
-function renderSingleChart(depts,mn,col,pfCls){
-  const key=mn===1?'m1':'m2';
-  const withD=depts.filter(d=>d.denom).sort((a,b)=>pct(b[key],b.denom)-pct(a[key],a.denom));
-  const bars=withD.map(d=>{
-    const p=pct(d[key],d.denom);
-    const pf=(p>=100)?'pf-full':pfCls;
-    return `<div class="br2">
-      <div class="bl" title="${d.lab}">${d.lab}</div>
-      <div class="bcon"><div class="${pf}" style="width:${capW(p)}%;position:absolute;left:0;top:0;height:100%;border-radius:4px;"></div></div>
-      <div class="bpl" style="color:${col}">${p}%</div>
-      <div class="bcnt">${d[key]}/${d.denom}</div>
-    </div>`;
-  }).join('');
-  return `<div class="chart-wrap">
-    <div class="chart-title">📊 Completion Chart — Module ${mn} <span class="chart-pill ${mn===2?'o':''}">${mn===1?'Jan–Mar 2026':'Apr–Jun 2026'}</span></div>
-    <div class="bc">${bars}</div>
-  </div>`;
-}
-
-function renderBothCharts(depts){
-  const s1=[...depts].filter(d=>d.denom).sort((a,b)=>pct(b.m1,b.denom)-pct(a.m1,a.denom));
-  const s2=[...depts].filter(d=>d.denom).sort((a,b)=>pct(b.m2,b.denom)-pct(a.m2,a.denom));
-  const b1=s1.map(d=>{const p=pct(d.m1,d.denom);const pf=p>=100?'pf-full':'pf-m1';return `<div class="br2"><div class="bl" title="${d.lab}">${d.lab}</div><div class="bcon"><div class="${pf}" style="width:${capW(p)}%;position:absolute;left:0;top:0;height:100%;border-radius:4px;"></div></div><div class="bpl" style="color:var(--teal)">${p}%</div><div class="bcnt">${d.m1}/${d.denom}</div></div>`;}).join('');
-  const b2=s2.map(d=>{const p=pct(d.m2,d.denom);const pf=p>=100?'pf-full':'pf-m2';return `<div class="br2"><div class="bl" title="${d.lab}">${d.lab}</div><div class="bcon"><div class="${pf}" style="width:${capW(p)}%;position:absolute;left:0;top:0;height:100%;border-radius:4px;"></div></div><div class="bpl" style="color:var(--orange)">${p}%</div><div class="bcnt">${d.m2}/${d.denom}</div></div>`;}).join('');
-  return `<div class="two-col">
-    <div class="chart-wrap"><div class="chart-title">📈 Module 1 Ranking <span class="chart-pill">Jan–Mar 2026</span></div><div class="bc">${b1}</div></div>
-    <div class="chart-wrap"><div class="chart-title">📈 Module 2 Ranking <span class="chart-pill o">Apr–Jun 2026</span></div><div class="bc">${b2}</div></div>
-  </div>`;
-}
-
-// ---- BY ROLE ----
-function renderJaw(el){
-  const mn=curMod==='2'?2:1;
-  const jd=mn===2?JAW_M2:JAW_M1;
-  const col=mn===2?'var(--orange)':'var(--teal)';
-
-  let totals={};
-  Object.entries(jd).forEach(([j,dc])=>{
-    if(curJaw!=='all'&&j!==curJaw)return;
-    const t=Object.values(dc).reduce((s,v)=>s+v,0);
-    if(t>0)totals[j]=t;
-  });
-  const sorted=Object.entries(totals).sort((a,b)=>b[1]-a[1]);
-
-  const cards=sorted.map(([j,tot])=>{
-    const dc=jd[j]||{};
-    const depts=Object.entries(dc).filter(([d,v])=>v>0).sort((a,b)=>b[1]-a[1]);
-    const dtags=depts.map(([d,v])=>`<span class="jc-dtag">${d}: ${v}</span>`).join('');
-    return `<div class="jaw-card">
-      <div class="jc-name">${j}</div>
-      <div class="jc-total" style="color:${col}">${tot}</div>
-      <div class="jc-sub">staff completed Module ${mn}</div>
-      <div class="jc-depts">${dtags}</div>
-    </div>`;
-  }).join('');
-
-  // Also show a summary table
-  const rows=sorted.map(([j,tot])=>{
-    const dc=jd[j]||{};
-    const depts=Object.entries(dc).filter(([d,v])=>v>0).sort((a,b)=>b[1]-a[1]).map(([d,v])=>`${d}(${v})`).join(', ');
-    return `<tr><td style="font-weight:700">${j}</td><td class="r" style="color:${col};font-weight:800">${tot}</td><td style="font-size:0.72rem;color:var(--text3)">${depts}</td></tr>`;
-  }).join('');
-
-  el.innerHTML=`
-    <div class="sec">👤 Completion by Jawatan (Role) — Module ${mn} · ${mn===1?'Jan–Mar':'Apr–Jun'} 2026</div>
-    <div class="note" style="margin-bottom:14px">Showing role breakdown for Module ${mn}. Use the <strong>Module</strong> filter to switch between Module 1 and Module 2. Use <strong>Jawatan</strong> filter to drill into a specific role.</div>
-    <div class="jaw-grid">${cards}</div>
-    <div class="table-card">
-      <div class="table-card-head" style="border-left:4px solid ${col}">Role Summary — Module ${mn}</div>
-      <table><thead><tr><th>Jawatan (Role)</th><th class="r">Total Completed</th><th>Department Breakdown</th></tr></thead>
-      <tbody>${rows}</tbody></table>
-    </div>
-  `;
-}
-
-// ============================================================
-// CONTROLS
-// ============================================================
-function setTab(t,btn){
-  curTab=t;
-  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active-all','active-m1','active-m2','active-j'));
-  btn.classList.add(t==='all'?'active-all':t==='1'?'active-m1':t==='2'?'active-m2':'active-j');
-  renderContent();
-}
-function setSort(s,btn){
-  sortBy=s;
-  document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderContent();
-}
-function applyF(){
-  curMod=document.getElementById('fm').value;
-  curDept=document.getElementById('fd').value;
-  curJaw=document.getElementById('fj').value;
-  srch=document.getElementById('fs').value;
-  // Auto-switch tab content based on module selection
-  if(curMod==='1' && curTab==='all') { /* keep overview but filter */ }
-  if(curMod==='2' && curTab==='all') { /* keep overview but filter */ }
-  renderContent();
-}
-function resetF(){
-  ['fm','fd','fj'].forEach(id=>document.getElementById(id).value='all');
-  document.getElementById('fs').value='';
-  curMod=curDept=curJaw='all'; srch='';
-  renderContent();
-}
+let dashData = null;   // full response from Apps Script
+let currentTab = 'overview';
+let sortCol = 'name';
+let sortDir = 1;
 
 // ============================================================
 // INIT
 // ============================================================
-function init(){
-  // Dept dropdown
-  const ds=document.getElementById('fd');
-  DEPTS.forEach(d=>{const o=document.createElement('option');o.value=d.id;o.textContent=d.lab;ds.appendChild(o);});
-  // Jawatan dropdown
-  const js=document.getElementById('fj');
-  const allJ=new Set([...Object.keys(JAW_M1),...Object.keys(JAW_M2)]);
-  [...allJ].sort().forEach(j=>{const o=document.createElement('option');o.value=j;o.textContent=j;js.appendChild(o);});
-  renderKPI();
-  renderContent();
+window.onload = function() {
+  if (!APPS_SCRIPT_URL) {
+    document.getElementById('configNotice').classList.add('show');
+    document.getElementById('statusText').textContent = 'Awaiting Apps Script URL…';
+    document.getElementById('refreshBtn').disabled = true;
+  } else {
+    loadData();
+  }
+};
+
+function saveUrl() {
+  const val = document.getElementById('appsScriptUrl').value.trim();
+  if (!val.startsWith('https://')) { alert('Please enter a valid URL'); return; }
+  APPS_SCRIPT_URL = val;
+  localStorage.setItem(LOCAL_STORAGE_KEY, val);
+  document.getElementById('configNotice').classList.remove('show');
+  loadData();
 }
-init();
+
+// ============================================================
+// DATA LOADING
+// ============================================================
+async function loadData() {
+  const btn = document.getElementById('refreshBtn');
+  btn.disabled = true;
+  document.getElementById('statusText').textContent = 'Fetching latest data…';
+  showLoading();
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL + '?t=' + Date.now());
+    const json = await res.json();
+
+    if (!json.success) throw new Error(json.error || 'Unknown error');
+
+    dashData = json.data;
+    const ts = new Date(json.timestamp);
+    document.getElementById('lastUpdated').textContent =
+      'Updated: ' + ts.toLocaleDateString('en-MY') + ' ' + ts.toLocaleTimeString('en-MY', {hour:'2-digit',minute:'2-digit'});
+    document.getElementById('statusText').textContent = 'Live data loaded ✓';
+
+    updateKPIs();
+    populateDeptFilter();
+    renderView();
+  } catch (err) {
+    document.getElementById('statusText').textContent = '⚠ Error loading data';
+    showError('Could not fetch data: ' + err.message + '<br><br>Check your Apps Script URL and deployment settings.<br>Make sure deployment is set to "Anyone can access".');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function showLoading() {
+  ['overview','modul1','modul2','byrole'].forEach(t => {
+    document.getElementById('tab-' + t).innerHTML =
+      '<div class="loading-state"><div class="spinner"></div><p>Fetching live data…</p></div>';
+  });
+}
+
+function showError(msg) {
+  document.getElementById('tab-' + currentTab).innerHTML = '<div class="error-state">⚠ ' + msg + '</div>';
+}
+
+// ============================================================
+// KPI UPDATE
+// ============================================================
+function updateKPIs() {
+  const s = dashData.summary;
+  document.getElementById('kpi-m1').textContent = s.overall_m1_pct + '%';
+  document.getElementById('kpi-m1-sub').textContent = s.total_m1_submitted + ' / ' + s.total_denominator + ' staff (Jan–Mar 2026)';
+  document.getElementById('kpi-m2').textContent = s.overall_m2_pct + '%';
+  document.getElementById('kpi-m2-sub').textContent = s.total_m2_submitted + ' / ' + s.total_denominator + ' staff (Apr–Jun 2026)';
+  document.getElementById('kpi-depts').textContent = s.depts_on_track;
+  document.getElementById('kpi-rem1').textContent = s.m1_remaining.toLocaleString();
+  document.getElementById('kpi-rem2').textContent = s.m2_remaining.toLocaleString();
+  document.getElementById('kpi-miss').textContent = s.missing_denominator;
+}
+
+// ============================================================
+// FILTER HELPERS
+// ============================================================
+function populateDeptFilter() {
+  const sel = document.getElementById('filterDept');
+  sel.innerHTML = '<option value="all">All Departments</option>';
+  dashData.departments.forEach(d => {
+    sel.innerHTML += `<option value="${d.key}">${d.name}</option>`;
+  });
+}
+
+function getFilteredDepts() {
+  if (!dashData) return [];
+  const mod = document.getElementById('filterModule').value;
+  const dept = document.getElementById('filterDept').value;
+  const status = document.getElementById('filterStatus').value;
+  const search = document.getElementById('searchInput').value.toLowerCase();
+
+  return dashData.departments.filter(d => {
+    if (dept !== 'all' && d.key !== dept) return false;
+    if (search && !d.name.toLowerCase().includes(search) && !d.key.toLowerCase().includes(search)) return false;
+    if (status === 'pending') return d.pending_denominator;
+    if (status === 'complete') {
+      if (mod === 'm1') return d.m1_pct >= 100;
+      if (mod === 'm2') return d.m2_pct >= 100;
+      return d.m1_pct >= 100 && d.m2_pct >= 100;
+    }
+    if (status === 'on_track') {
+      if (mod === 'm1') return d.m1_pct !== null && d.m1_pct >= 80 && d.m1_pct < 100;
+      if (mod === 'm2') return d.m2_pct !== null && d.m2_pct >= 80 && d.m2_pct < 100;
+      return d.m1_pct !== null && d.m2_pct !== null && d.m1_pct >= 80 && d.m2_pct >= 80;
+    }
+    if (status === 'below') {
+      if (mod === 'm1') return d.m1_pct !== null && d.m1_pct < 80;
+      if (mod === 'm2') return d.m2_pct !== null && d.m2_pct < 80;
+      return (d.m1_pct !== null && d.m1_pct < 80) || (d.m2_pct !== null && d.m2_pct < 80);
+    }
+    return true;
+  });
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function switchTab(tab, el) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  ['overview','modul1','modul2','byrole'].forEach(t => {
+    document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
+  });
+  renderView();
+}
+
+function renderView() {
+  if (!dashData) return;
+  if (currentTab === 'overview') renderOverview();
+  else if (currentTab === 'modul1') renderModuleTable('m1');
+  else if (currentTab === 'modul2') renderModuleTable('m2');
+  else if (currentTab === 'byrole') renderByRole();
+}
+
+// ============================================================
+// OVERVIEW — cards
+// ============================================================
+function renderOverview() {
+  const depts = getFilteredDepts();
+  const el = document.getElementById('tab-overview');
+  if (!depts.length) { el.innerHTML = '<div class="empty-msg">No departments match your filters.</div>'; return; }
+
+  el.innerHTML = '<div class="dept-grid">' + depts.map(d => {
+    const m1pct = d.m1_pct !== null ? d.m1_pct : null;
+    const m2pct = d.m2_pct !== null ? d.m2_pct : null;
+    const cls = d.pending_denominator ? 'pending' : (m1pct >= 100 && m2pct >= 100 ? 'complete' : '');
+    const denomStr = d.pending_denominator
+      ? '<span class="missing">⏳ Denominator pending</span>'
+      : `${d.denominator} staff`;
+
+    return `<div class="dept-card ${cls}">
+      <div class="dept-name">${d.name}</div>
+      <div class="dept-denom ${d.pending_denominator ? 'missing' : ''}">${denomStr}</div>
+      <div class="module-row">
+        <div class="module-label">
+          <span>Modul 1 &nbsp;<small style="color:var(--text2)">${d.m1_submitted} submitted</small></span>
+          <span class="pct">${m1pct !== null ? m1pct + '%' : '—'}</span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill bar-m1" style="width:${m1pct ?? 0}%"></div></div>
+      </div>
+      <div class="module-row">
+        <div class="module-label">
+          <span>Modul 2 &nbsp;<small style="color:var(--text2)">${d.m2_submitted} submitted</small></span>
+          <span class="pct">${m2pct !== null ? m2pct + '%' : '—'}</span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill bar-m2" style="width:${m2pct ?? 0}%"></div></div>
+      </div>
+    </div>`;
+  }).join('') + '</div>';
+}
+
+// ============================================================
+// MODULE TABLE
+// ============================================================
+function renderModuleTable(mod) {
+  const depts = getFilteredDepts();
+  const el = document.getElementById('tab-' + (mod === 'm1' ? 'modul1' : 'modul2'));
+  const pctKey = mod + '_pct';
+  const subKey = mod + '_submitted';
+  const remKey = mod + '_remaining';
+
+  const moduleLabel = mod === 'm1'
+    ? 'Modul 1: Pengenalan kepada IPC (Jan–Mar 2026)'
+    : 'Modul 2: Kebersihan Tangan / Hand Hygiene (Apr–Jun 2026)';
+
+  const sorted = [...depts].sort((a, b) => {
+    if (sortCol === 'name') return sortDir * a.name.localeCompare(b.name);
+    if (sortCol === 'pct') return sortDir * ((a[pctKey] ?? -1) - (b[pctKey] ?? -1));
+    if (sortCol === 'submitted') return sortDir * (a[subKey] - b[subKey]);
+    if (sortCol === 'remaining') return sortDir * ((a[remKey] ?? 0) - (b[remKey] ?? 0));
+    return 0;
+  });
+
+  function sortHdr(col, label) {
+    const arrow = sortCol === col ? (sortDir === 1 ? '↑' : '↓') : '⇅';
+    return `<th onclick="setSort('${col}','${mod}')">${label}<span class="sort-arrow">${arrow}</span></th>`;
+  }
+
+  if (!sorted.length) { el.innerHTML = '<div class="empty-msg">No departments match your filters.</div>'; return; }
+
+  el.innerHTML = `
+    <p style="color:var(--text2);font-size:0.8rem;margin-bottom:12px">${moduleLabel}</p>
+    <div class="table-wrap">
+    <table>
+      <thead><tr>
+        ${sortHdr('name','Department')}
+        ${sortHdr('submitted','Submitted')}
+        <th>Denominator</th>
+        ${sortHdr('remaining','Remaining')}
+        ${sortHdr('pct','Compliance %')}
+        <th>Progress</th>
+      </tr></thead>
+      <tbody>
+      ${sorted.map(d => {
+        const pct = d[pctKey];
+        const pctClass = pct === null ? '' : pct >= 80 ? 'pct-high' : pct >= 50 ? 'pct-mid' : 'pct-low';
+        const pctStr = pct !== null ? pct + '%' : '<span class="pending-tag">PENDING</span>';
+        const rem = d[remKey];
+        return `<tr>
+          <td><strong>${d.name}</strong></td>
+          <td>${d[subKey]}</td>
+          <td>${d.denominator ?? '<span class="pending-tag">TBC</span>'}</td>
+          <td>${rem !== null ? rem : '—'}</td>
+          <td class="pct-cell ${pctClass}">${pctStr}</td>
+          <td style="min-width:100px">
+            <div class="bar-bg"><div class="bar-fill ${mod === 'm1' ? 'bar-m1' : 'bar-m2'}" style="width:${pct ?? 0}%"></div></div>
+          </td>
+        </tr>`;
+      }).join('')}
+      </tbody>
+    </table></div>`;
+}
+
+function setSort(col, mod) {
+  if (sortCol === col) sortDir *= -1;
+  else { sortCol = col; sortDir = 1; }
+  if (currentTab === 'modul1') renderModuleTable('m1');
+  else if (currentTab === 'modul2') renderModuleTable('m2');
+}
+
+// ============================================================
+// BY JAWATAN (Role) — derived from dept data (placeholder structure)
+// ============================================================
+function renderByRole() {
+  const el = document.getElementById('tab-byrole');
+  el.innerHTML = `
+    <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:20px;color:var(--text2);font-size:0.85rem;text-align:center;">
+      <p style="font-size:1rem;color:var(--text);margin-bottom:8px">By Jawatan (Role) Tab</p>
+      <p>To enable this tab, add a <strong>Jawatan</strong> column to your Google Sheet masterlists.<br>
+      The Apps Script will automatically aggregate by role once that column exists.</p>
+    </div>`;
+}
 </script>
 </body>
 </html>

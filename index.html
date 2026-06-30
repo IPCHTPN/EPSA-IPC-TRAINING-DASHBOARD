@@ -374,9 +374,9 @@ function showError(msg) {
 function updateKPIs() {
   const s = dashData.summary;
   document.getElementById('kpi-m1').textContent = s.overall_m1_pct + '%';
-  document.getElementById('kpi-m1-sub').textContent = s.total_m1_submitted + ' / ' + s.total_denominator + ' staff (Jan–Mar 2026)';
+  document.getElementById('kpi-m1-sub').textContent = s.m1_total_all + ' submitted (Jan–Mar 2026)';
   document.getElementById('kpi-m2').textContent = s.overall_m2_pct + '%';
-  document.getElementById('kpi-m2-sub').textContent = s.total_m2_submitted + ' / ' + s.total_denominator + ' staff (Apr–Jun 2026)';
+  document.getElementById('kpi-m2-sub').textContent = s.m2_total_all + ' submitted (Apr–Jun 2026)';
   document.getElementById('kpi-depts').textContent = s.depts_on_track;
   document.getElementById('kpi-rem1').textContent = s.m1_remaining.toLocaleString();
   document.getElementById('kpi-rem2').textContent = s.m2_remaining.toLocaleString();

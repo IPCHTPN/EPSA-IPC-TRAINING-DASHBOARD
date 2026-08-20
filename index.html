@@ -353,21 +353,38 @@ function renderView() {
 function renderOverview() {
   const depts = getFilteredDepts();
   const el = document.getElementById('tab-overview');
+  const jawatan = document.getElementById('filterJawatan').value;
   if (!depts.length) { el.innerHTML = '<div class="empty-msg">No departments match your filters.</div>'; return; }
+
   el.innerHTML = '<div class="dept-grid">' + depts.map(d => {
-    const cls = d.pending_denominator ? 'pending-denom' : (d.m1_pct >= 100 && d.m2_pct >= 100 ? 'complete' : '');
+    // If jawatan filter active, show jawatan-specific counts for this dept
+    let m1sub = d.m1_submitted, m2sub = d.m2_submitted;
+    let m1pct = d.m1_pct, m2pct = d.m2_pct;
+    let jawatanLabel = '';
+
+    if (jawatan !== 'all' && dashData.jawatan && dashData.jawatan[jawatan]) {
+      const deptJaw = (dashData.jawatan[jawatan].depts || {})[d.key];
+      m1sub = deptJaw ? (deptJaw.m1 || 0) : 0;
+      m2sub = deptJaw ? (deptJaw.m2 || 0) : 0;
+      // No percentage for jawatan sub-filter (no sub-denominator)
+      m1pct = null; m2pct = null;
+      jawatanLabel = `<div style="font-size:.68rem;color:var(--accent2);margin-bottom:6px">👤 ${jawatan}</div>`;
+    }
+
+    const cls = d.pending_denominator ? 'pending-denom' : (!jawatanLabel && d.m1_pct >= 100 && d.m2_pct >= 100 ? 'complete' : '');
     return `<div class="dept-card ${cls}">
       <div class="dept-name">${d.name}</div>
       <div class="dept-denom">${d.pending_denominator ? '⏳ Denominator pending' : d.denominator+' staff'}</div>
+      ${jawatanLabel}
       <div class="module-row">
-        <div class="module-label"><span>Modul 1 &nbsp;<small>${d.m1_submitted} submitted</small></span>
-          <span class="pct">${d.m1_pct !== null ? d.m1_pct+'%' : '—'}</span></div>
-        <div class="bar-bg"><div class="bar-fill bar-m1" style="width:${d.m1_pct??0}%"></div></div>
+        <div class="module-label"><span>Modul 1 &nbsp;<small>${m1sub} submitted</small></span>
+          <span class="pct">${m1pct !== null ? m1pct+'%' : ''}</span></div>
+        <div class="bar-bg"><div class="bar-fill bar-m1" style="width:${m1pct??0}%"></div></div>
       </div>
       <div class="module-row">
-        <div class="module-label"><span>Modul 2 &nbsp;<small>${d.m2_submitted} submitted</small></span>
-          <span class="pct">${d.m2_pct !== null ? d.m2_pct+'%' : '—'}</span></div>
-        <div class="bar-bg"><div class="bar-fill bar-m2" style="width:${d.m2_pct??0}%"></div></div>
+        <div class="module-label"><span>Modul 2 &nbsp;<small>${m2sub} submitted</small></span>
+          <span class="pct">${m2pct !== null ? m2pct+'%' : ''}</span></div>
+        <div class="bar-bg"><div class="bar-fill bar-m2" style="width:${m2pct??0}%"></div></div>
       </div>
     </div>`;
   }).join('') + '</div>';
@@ -450,8 +467,20 @@ function renderByJawatan() {
 
   // Full jawatan table — fix: access obj.m1_total and obj.m2_total correctly
   const jawatanEntries = Object.entries(jaw)
-    .filter(([j]) => !searchVal || j.toLowerCase().includes(searchVal))
-    .sort((a,b) => a[0].localeCompare(b[0]));
+    .filter(([j, obj]) => {
+      if (searchVal && !j.toLowerCase().includes(searchVal)) return false;
+      // Only show jawatan that have data for current dept filter
+      if (deptFilter !== 'all') {
+        const deptObj = (obj.depts || {})[deptFilter];
+        return deptObj && ((deptObj.m1||0) + (deptObj.m2||0)) > 0;
+      }
+      return (obj.m1_total||0) + (obj.m2_total||0) > 0;
+    })
+    .sort((a,b) => {
+      const totA = (a[1].m1_total||0)+(a[1].m2_total||0);
+      const totB = (b[1].m1_total||0)+(b[1].m2_total||0);
+      return totB - totA; // Sort by total descending
+    });
 
   let html = `<p style="color:var(--text2);font-size:.78rem;margin-bottom:12px">
     ${jawatanEntries.length} jawatan categories · Source: Column E (STANDARDIZED JAWATAN)
@@ -464,18 +493,18 @@ function renderByJawatan() {
   </tr></thead><tbody>`;
 
   jawatanEntries.forEach(([jawatan, obj]) => {
-    // obj = { m1_total: N, m2_total: N, depts: { DEPT: {m1:N, m2:N} } }
     let m1 = obj.m1_total || 0;
     let m2 = obj.m2_total || 0;
 
-    // If dept filter active, show only that dept's count
     if (deptFilter !== 'all') {
       const deptObj = (obj.depts || {})[deptFilter];
       m1 = deptObj ? (deptObj.m1 || 0) : 0;
       m2 = deptObj ? (deptObj.m2 || 0) : 0;
     }
 
-    // Top 3 departments for this jawatan
+    // Skip rows with no data
+    if (m1 === 0 && m2 === 0) return;
+
     const topDepts = Object.entries(obj.depts || {})
       .sort((a,b) => (b[1].m1+b[1].m2) - (a[1].m1+a[1].m2))
       .slice(0, 3)

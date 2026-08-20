@@ -80,7 +80,7 @@
   thead th:hover{color:var(--text);}
   tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
   tbody tr:hover{background:var(--card2);}
-  tbody td{padding:9px 14px;}
+  tbody td{padding:9px 14px;color:var(--text);}
   .pct-high{color:var(--green);font-weight:700;}
   .pct-mid{color:var(--yellow);font-weight:700;}
   .pct-low{color:var(--red);font-weight:700;}
@@ -99,7 +99,7 @@
     color:var(--text);padding:6px 10px;border-radius:6px;font-size:.78rem;}
   .sort-arrow{font-size:.65rem;margin-left:4px;}
   .tag{display:inline-block;background:var(--bg2);border:1px solid var(--border);
-    border-radius:4px;padding:1px 6px;font-size:.68rem;margin:1px;}
+    color:var(--text);border-radius:4px;padding:1px 6px;font-size:.68rem;margin:1px;}
   @media print{
     .no-print{display:none!important;}
     body{background:#fff;color:#000;}
@@ -421,8 +421,8 @@ function renderModuleTable(mod) {
       const pct = d[pctKey];
       const cls = pct===null?'':(pct>=80?'pct-high':pct>=50?'pct-mid':'pct-low');
       return `<tr><td><strong>${d.name}</strong></td><td>${d[subKey]}</td>
-        <td>${d.denominator??'<span class="pending-tag">TBC</span>'}</td>
-        <td>${d[remKey]!==null?d[remKey]:'—'}</td>
+        <td style="color:var(--text)">${d.denominator??'<span class="pending-tag">TBC</span>'}</td>
+        <td style="color:var(--text)">${d[remKey]!==null?d[remKey]:'—'}</td>
         <td class="${cls}">${pct!==null?pct+'%':'<span class="pending-tag">PENDING</span>'}</td>
         <td style="min-width:100px"><div class="bar-bg"><div class="bar-fill ${mod==='m1'?'bar-m1':'bar-m2'}" style="width:${pct??0}%"></div></div></td>
       </tr>`;
@@ -473,6 +473,7 @@ function renderByJawatan() {
   // Full jawatan table — fix: access obj.m1_total and obj.m2_total correctly
   const jawatanEntries = Object.entries(jaw)
     .filter(([j, obj]) => {
+      if (!j || j.trim() === '' || j === 'TIDAK DINYATAKAN') return false;
       if (searchVal && !j.toLowerCase().includes(searchVal)) return false;
       // Only show jawatan with actual data
       if (deptFilter !== 'all') {

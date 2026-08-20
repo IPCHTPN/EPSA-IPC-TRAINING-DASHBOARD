@@ -323,11 +323,6 @@ function getFilteredDepts() {
     if (status === 'complete') return d.m1_pct >= 100 && d.m2_pct >= 100;
     if (status === 'on_track') return d.m1_pct !== null && d.m2_pct !== null && d.m1_pct >= 80 && d.m2_pct >= 80;
     if (status === 'below') return (d.m1_pct !== null && d.m1_pct < 80) || (d.m2_pct !== null && d.m2_pct < 80);
-    // Jawatan filter — only show depts that have this jawatan
-    if (jawatan !== 'all' && dashData.jawatan && dashData.jawatan[jawatan]) {
-      const deptData = dashData.jawatan[jawatan].depts || {};
-      if (!deptData[d.key]) return false;
-    }
     return true;
   });
 }
@@ -469,7 +464,7 @@ function renderByJawatan() {
   const jawatanEntries = Object.entries(jaw)
     .filter(([j, obj]) => {
       if (searchVal && !j.toLowerCase().includes(searchVal)) return false;
-      // Only show jawatan that have data for current dept filter
+      // Only show jawatan with actual data
       if (deptFilter !== 'all') {
         const deptObj = (obj.depts || {})[deptFilter];
         return deptObj && ((deptObj.m1||0) + (deptObj.m2||0)) > 0;
@@ -477,9 +472,13 @@ function renderByJawatan() {
       return (obj.m1_total||0) + (obj.m2_total||0) > 0;
     })
     .sort((a,b) => {
-      const totA = (a[1].m1_total||0)+(a[1].m2_total||0);
-      const totB = (b[1].m1_total||0)+(b[1].m2_total||0);
-      return totB - totA; // Sort by total descending
+      const totA = deptFilter !== 'all' 
+        ? ((a[1].depts||{})[deptFilter]?.m1||0) + ((a[1].depts||{})[deptFilter]?.m2||0)
+        : (a[1].m1_total||0)+(a[1].m2_total||0);
+      const totB = deptFilter !== 'all'
+        ? ((b[1].depts||{})[deptFilter]?.m1||0) + ((b[1].depts||{})[deptFilter]?.m2||0)
+        : (b[1].m1_total||0)+(b[1].m2_total||0);
+      return totB - totA;
     });
 
   let html = `<p style="color:var(--text2);font-size:.78rem;margin-bottom:12px">

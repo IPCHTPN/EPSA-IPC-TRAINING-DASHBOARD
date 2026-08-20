@@ -5,19 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EPSA IPC Training Dashboard — HTPN</title>
 <style>
-  :root {
-    --bg:#0a0f1e;--bg2:#0d1526;--card:#111827;--card2:#1a2235;
-    --border:#1e2d4a;--accent:#3b82f6;--accent2:#60a5fa;
-    --green:#10b981;--yellow:#f59e0b;--red:#ef4444;--purple:#8b5cf6;
-    --text:#e2e8f0;--text2:#94a3b8;
-  }
+  :root{--bg:#0a0f1e;--bg2:#0d1526;--card:#111827;--card2:#1a2235;--border:#1e2d4a;
+    --accent:#3b82f6;--accent2:#60a5fa;--green:#10b981;--yellow:#f59e0b;
+    --red:#ef4444;--purple:#8b5cf6;--text:#e2e8f0;--text2:#94a3b8;}
   *{box-sizing:border-box;margin:0;padding:0;}
   body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh;}
   body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     background-image:linear-gradient(rgba(59,130,246,.03) 1px,transparent 1px),
     linear-gradient(90deg,rgba(59,130,246,.03) 1px,transparent 1px);background-size:40px 40px;}
   .container{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:24px 20px;}
-  header{text-align:center;margin-bottom:28px;}
+  header{text-align:center;margin-bottom:24px;}
   header h1{font-size:1.9rem;font-weight:700;color:#fff;letter-spacing:1px;}
   header h1 span{color:var(--accent2);}
   header p{color:var(--text2);font-size:.85rem;margin-top:6px;}
@@ -27,14 +24,13 @@
   .live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
   .status-bar{background:var(--card2);border:1px solid var(--border);border-radius:10px;
-    padding:10px 18px;margin-bottom:20px;display:flex;align-items:center;
+    padding:10px 18px;margin-bottom:18px;display:flex;align-items:center;
     justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:.8rem;color:var(--text2);}
-  .btn{background:var(--accent);border:none;color:#fff;padding:6px 14px;
-    border-radius:6px;cursor:pointer;font-size:.78rem;transition:opacity .2s;}
-  .btn:hover{opacity:.85;} .btn:disabled{opacity:.4;cursor:default;}
+  .btn{background:var(--accent);border:none;color:#fff;padding:6px 14px;border-radius:6px;
+    cursor:pointer;font-size:.78rem;transition:opacity .2s;}
+  .btn:hover{opacity:.85;}.btn:disabled{opacity:.4;cursor:default;}
   .btn-green{background:var(--green);}
-  .btn-yellow{background:var(--yellow);color:#000;}
-  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:24px;}
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:20px;}
   .kpi-card{background:var(--card);border:1px solid var(--border);border-radius:14px;
     padding:16px 18px;position:relative;overflow:hidden;transition:transform .2s;}
   .kpi-card:hover{transform:translateY(-2px);}
@@ -43,20 +39,25 @@
   .kpi-label{font-size:.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;}
   .kpi-value{font-size:1.9rem;font-weight:700;color:var(--kpi-color,var(--accent2));margin:6px 0 4px;line-height:1;}
   .kpi-sub{font-size:.7rem;color:var(--text2);}
+  .report-bar{background:var(--card);border:1px solid var(--border);border-radius:10px;
+    padding:12px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .report-bar label{font-size:.78rem;color:var(--text2);white-space:nowrap;}
+  .report-bar select{background:var(--bg2);border:1px solid var(--border);color:var(--text);
+    padding:6px 10px;border-radius:6px;font-size:.82rem;flex:1;min-width:160px;}
   .filters{background:var(--card);border:1px solid var(--border);border-radius:12px;
-    padding:14px 18px;margin-bottom:20px;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;}
+    padding:14px 18px;margin-bottom:18px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
   .filters label{font-size:.73rem;color:var(--text2);display:flex;flex-direction:column;gap:4px;}
   .filters select,.filters input{background:var(--bg2);border:1px solid var(--border);
-    color:var(--text);padding:7px 10px;border-radius:8px;font-size:.82rem;min-width:130px;outline:none;}
+    color:var(--text);padding:7px 10px;border-radius:8px;font-size:.82rem;min-width:120px;outline:none;}
   .filters select:focus,.filters input:focus{border-color:var(--accent);}
-  .search-wrap{flex:1;min-width:160px;}
+  .search-wrap{flex:1;min-width:150px;}
   .search-wrap input{width:100%;}
   .tabs{display:flex;gap:4px;margin-bottom:18px;border-bottom:1px solid var(--border);}
   .tab-btn{background:none;border:none;color:var(--text2);padding:10px 16px;cursor:pointer;
     font-size:.85rem;border-bottom:2px solid transparent;transition:all .2s;margin-bottom:-1px;}
   .tab-btn.active{color:var(--accent2);border-bottom-color:var(--accent2);font-weight:600;}
   .tab-btn:hover:not(.active){color:var(--text);}
-  .dept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+  .dept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
   .dept-card{background:var(--card);border:1px solid var(--border);border-radius:12px;
     padding:16px 18px;transition:transform .2s,border-color .2s;}
   .dept-card:hover{transform:translateY(-2px);border-color:var(--accent);}
@@ -64,7 +65,6 @@
   .dept-card.pending-denom{border-color:rgba(245,158,11,.3);}
   .dept-name{font-weight:600;font-size:.92rem;margin-bottom:3px;}
   .dept-denom{font-size:.72rem;color:var(--text2);margin-bottom:10px;}
-  .dept-denom.missing{color:var(--yellow);}
   .module-row{margin-bottom:7px;}
   .module-label{display:flex;justify-content:space-between;font-size:.74rem;color:var(--text2);margin-bottom:3px;}
   .module-label .pct{font-weight:700;}
@@ -80,37 +80,32 @@
   thead th:hover{color:var(--text);}
   tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
   tbody tr:hover{background:var(--card2);}
-  tbody td{padding:10px 14px;}
+  tbody td{padding:9px 14px;}
   .pct-high{color:var(--green);font-weight:700;}
   .pct-mid{color:var(--yellow);font-weight:700;}
   .pct-low{color:var(--red);font-weight:700;}
   .pending-tag{font-size:.7rem;background:rgba(245,158,11,.2);color:var(--yellow);padding:2px 7px;border-radius:4px;}
-  .loading-state,.error-state{text-align:center;padding:60px 20px;color:var(--text2);}
+  .loading-state{text-align:center;padding:60px 20px;color:var(--text2);}
   .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);
     border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px;}
   @keyframes spin{to{transform:rotate(360deg)}}
   .empty-msg{text-align:center;padding:40px;color:var(--text2);font-size:.85rem;}
   .config-notice{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);
     border-radius:10px;padding:14px 18px;font-size:.8rem;color:var(--yellow);
-    margin-bottom:20px;display:none;}
+    margin-bottom:18px;display:none;}
   .config-notice.show{display:block;}
   .config-input{display:flex;gap:8px;margin-top:8px;}
   .config-input input{flex:1;background:var(--bg2);border:1px solid var(--border);
     color:var(--text);padding:6px 10px;border-radius:6px;font-size:.78rem;}
   .sort-arrow{font-size:.65rem;margin-left:4px;}
-  /* Report */
-  .report-bar{background:var(--card2);border:1px solid var(--border);border-radius:10px;
-    padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-  .report-bar label{font-size:.78rem;color:var(--text2);}
-  .report-bar select{background:var(--bg2);border:1px solid var(--border);color:var(--text);
-    padding:6px 10px;border-radius:6px;font-size:.82rem;}
+  .tag{display:inline-block;background:var(--bg2);border:1px solid var(--border);
+    border-radius:4px;padding:1px 6px;font-size:.68rem;margin:1px;}
   @media print{
-    body{background:#fff;color:#000;}
     .no-print{display:none!important;}
-    .print-only{display:block!important;}
-    .report-content{page-break-inside:avoid;}
+    body{background:#fff;color:#000;}
+    #printArea{display:block!important;}
   }
-  .print-only{display:none;}
+  #printArea{display:none;}
 </style>
 </head>
 <body>
@@ -134,7 +129,7 @@
 
   <div class="status-bar no-print">
     <span id="statusText">Loading…</span>
-    <span id="lastUpdated" style="color:var(--text2)"></span>
+    <span id="lastUpdated"></span>
     <button class="btn" id="refreshBtn" onclick="loadData()" disabled>↻ Refresh</button>
   </div>
 
@@ -171,15 +166,14 @@
     </div>
   </div>
 
-  <!-- Report bar -->
+  <!-- Report Generator -->
   <div class="report-bar no-print">
-    <label>📄 Generate Department Report:</label>
-    <select id="reportDept">
-      <option value="all">All Departments (Summary)</option>
-    </select>
+    <label>📄 Generate Report:</label>
+    <select id="reportDept"><option value="all">All Departments (Summary)</option></select>
     <button class="btn btn-green" onclick="generateReport()">Generate & Print Report</button>
   </div>
 
+  <!-- Filters — now includes Jawatan dropdown -->
   <div class="filters no-print">
     <label>Module
       <select id="filterModule" onchange="renderView()">
@@ -201,6 +195,11 @@
         <option value="below">Below 80%</option>
       </select>
     </label>
+    <label>Jawatan (Role)
+      <select id="filterJawatan" onchange="renderView()">
+        <option value="all">All Roles</option>
+      </select>
+    </label>
     <label class="search-wrap">Search
       <input type="text" id="searchInput" placeholder="Search department…" oninput="renderView()"/>
     </label>
@@ -218,8 +217,7 @@
   <div id="tab-modul2" style="display:none"></div>
   <div id="tab-byrole" style="display:none"></div>
 
-  <!-- Print area -->
-  <div id="printArea" class="print-only"></div>
+  <div id="printArea"></div>
 </div>
 
 <script>
@@ -257,48 +255,58 @@ async function loadData() {
     dashData = json.data;
     const ts = new Date(json.timestamp);
     document.getElementById('lastUpdated').textContent =
-      'Updated: ' + ts.toLocaleDateString('en-MY') + ' ' + ts.toLocaleTimeString('en-MY',{hour:'2-digit',minute:'2-digit'});
+      'Updated: ' + ts.toLocaleDateString('en-MY') + ' ' +
+      ts.toLocaleTimeString('en-MY',{hour:'2-digit',minute:'2-digit'});
     document.getElementById('statusText').textContent = 'Live data loaded ✓';
     updateKPIs();
     populateFilters();
     renderView();
   } catch(err) {
-    document.getElementById('statusText').textContent = '⚠ Error loading data';
-    showError('Could not fetch data: ' + err.message);
-  } finally { btn.disabled = false; }
+    document.getElementById('statusText').textContent = '⚠ Error: ' + err.message;
+    document.getElementById('refreshBtn').disabled = false;
+  } finally {
+    document.getElementById('refreshBtn').disabled = false;
+  }
 }
 
 function showLoading() {
   ['overview','modul1','modul2','byrole'].forEach(t => {
     document.getElementById('tab-'+t).innerHTML =
-      '<div class="loading-state"><div class="spinner"></div><p>Fetching live data…</p></div>';
+      '<div class="loading-state"><div class="spinner"></div><p>Loading…</p></div>';
   });
-}
-function showError(msg) {
-  document.getElementById('tab-'+currentTab).innerHTML = '<div class="error-state">⚠ '+msg+'</div>';
 }
 
 function updateKPIs() {
   const s = dashData.summary;
   document.getElementById('kpi-m1').textContent = s.overall_m1_pct + '%';
-  document.getElementById('kpi-m1-sub').textContent = (s.m1_total_all || s.total_m1_submitted || '—') + ' submitted (Jan–Mar 2026)';
+  document.getElementById('kpi-m1-sub').textContent = (s.m1_total_all||s.total_m1_submitted||'—') + ' submitted (Jan–Mar 2026)';
   document.getElementById('kpi-m2').textContent = s.overall_m2_pct + '%';
-  document.getElementById('kpi-m2-sub').textContent = (s.m2_total_all || s.total_m2_submitted || '—') + ' submitted (Apr–Jun 2026)';
+  document.getElementById('kpi-m2-sub').textContent = (s.m2_total_all||s.total_m2_submitted||'—') + ' submitted (Apr–Jun 2026)';
   document.getElementById('kpi-depts').textContent = s.depts_on_track;
-  document.getElementById('kpi-rem1').textContent = s.m1_remaining.toLocaleString();
-  document.getElementById('kpi-rem2').textContent = s.m2_remaining.toLocaleString();
+  document.getElementById('kpi-rem1').textContent = (s.m1_remaining||0).toLocaleString();
+  document.getElementById('kpi-rem2').textContent = (s.m2_remaining||0).toLocaleString();
   document.getElementById('kpi-miss').textContent = s.missing_denominator;
 }
 
 function populateFilters() {
-  const sel = document.getElementById('filterDept');
-  const rep = document.getElementById('reportDept');
-  sel.innerHTML = '<option value="all">All Departments</option>';
-  rep.innerHTML = '<option value="all">All Departments (Summary)</option>';
+  // Department filters
+  const selDept = document.getElementById('filterDept');
+  const repDept = document.getElementById('reportDept');
+  selDept.innerHTML = '<option value="all">All Departments</option>';
+  repDept.innerHTML = '<option value="all">All Departments (Summary)</option>';
   dashData.departments.forEach(d => {
-    sel.innerHTML += `<option value="${d.key}">${d.name}</option>`;
-    rep.innerHTML += `<option value="${d.key}">${d.name}</option>`;
+    selDept.innerHTML += `<option value="${d.key}">${d.name}</option>`;
+    repDept.innerHTML += `<option value="${d.key}">${d.name}</option>`;
   });
+
+  // Jawatan filter — populate from jawatan data
+  const selJaw = document.getElementById('filterJawatan');
+  selJaw.innerHTML = '<option value="all">All Roles</option>';
+  if (dashData.jawatan && Object.keys(dashData.jawatan).length > 0) {
+    Object.keys(dashData.jawatan).sort().forEach(j => {
+      selJaw.innerHTML += `<option value="${j}">${j}</option>`;
+    });
+  }
 }
 
 function getFilteredDepts() {
@@ -306,13 +314,20 @@ function getFilteredDepts() {
   const mod = document.getElementById('filterModule').value;
   const dept = document.getElementById('filterDept').value;
   const status = document.getElementById('filterStatus').value;
+  const jawatan = document.getElementById('filterJawatan').value;
   const search = document.getElementById('searchInput').value.toLowerCase();
+
   return dashData.departments.filter(d => {
     if (dept !== 'all' && d.key !== dept) return false;
     if (search && !d.name.toLowerCase().includes(search) && !d.key.toLowerCase().includes(search)) return false;
     if (status === 'complete') return d.m1_pct >= 100 && d.m2_pct >= 100;
     if (status === 'on_track') return d.m1_pct !== null && d.m2_pct !== null && d.m1_pct >= 80 && d.m2_pct >= 80;
     if (status === 'below') return (d.m1_pct !== null && d.m1_pct < 80) || (d.m2_pct !== null && d.m2_pct < 80);
+    // Jawatan filter — only show depts that have this jawatan
+    if (jawatan !== 'all' && dashData.jawatan && dashData.jawatan[jawatan]) {
+      const deptData = dashData.jawatan[jawatan].depts || {};
+      if (!deptData[d.key]) return false;
+    }
     return true;
   });
 }
@@ -343,7 +358,7 @@ function renderOverview() {
     const cls = d.pending_denominator ? 'pending-denom' : (d.m1_pct >= 100 && d.m2_pct >= 100 ? 'complete' : '');
     return `<div class="dept-card ${cls}">
       <div class="dept-name">${d.name}</div>
-      <div class="dept-denom ${d.pending_denominator?'missing':''}">${d.pending_denominator ? '⏳ Denominator pending' : d.denominator+' staff'}</div>
+      <div class="dept-denom">${d.pending_denominator ? '⏳ Denominator pending' : d.denominator+' staff'}</div>
       <div class="module-row">
         <div class="module-label"><span>Modul 1 &nbsp;<small>${d.m1_submitted} submitted</small></span>
           <span class="pct">${d.m1_pct !== null ? d.m1_pct+'%' : '—'}</span></div>
@@ -362,8 +377,7 @@ function renderModuleTable(mod) {
   const depts = getFilteredDepts();
   const el = document.getElementById('tab-'+(mod==='m1'?'modul1':'modul2'));
   const pctKey = mod+'_pct', subKey = mod+'_submitted', remKey = mod+'_remaining';
-  const label = mod==='m1'
-    ? 'Modul 1: Pengenalan kepada IPC (Jan–Mar 2026)'
+  const label = mod==='m1' ? 'Modul 1: Pengenalan kepada IPC (Jan–Mar 2026)'
     : 'Modul 2: Kebersihan Tangan / Hand Hygiene (Apr–Jun 2026)';
   const sorted = [...depts].sort((a,b) => {
     if (sortCol==='name') return sortDir*a.name.localeCompare(b.name);
@@ -379,13 +393,12 @@ function renderModuleTable(mod) {
   }
   el.innerHTML = `<p style="color:var(--text2);font-size:.8rem;margin-bottom:12px">${label}</p>
     <div class="table-wrap"><table>
-    <thead><tr>${hdr('name','Department')}${hdr('submitted','Submitted')}<th>Denominator</th>${hdr('remaining','Remaining')}${hdr('pct','Compliance %')}<th>Progress</th></tr></thead>
+    <thead><tr>${hdr('name','Department')}${hdr('submitted','Submitted')}<th>Denominator</th>
+    ${hdr('remaining','Remaining')}${hdr('pct','Compliance %')}<th>Progress</th></tr></thead>
     <tbody>${sorted.map(d => {
       const pct = d[pctKey];
       const cls = pct===null?'':(pct>=80?'pct-high':pct>=50?'pct-mid':'pct-low');
-      return `<tr>
-        <td><strong>${d.name}</strong></td>
-        <td>${d[subKey]}</td>
+      return `<tr><td><strong>${d.name}</strong></td><td>${d[subKey]}</td>
         <td>${d.denominator??'<span class="pending-tag">TBC</span>'}</td>
         <td>${d[remKey]!==null?d[remKey]:'—'}</td>
         <td class="${cls}">${pct!==null?pct+'%':'<span class="pending-tag">PENDING</span>'}</td>
@@ -394,241 +407,215 @@ function renderModuleTable(mod) {
     }).join('')}</tbody></table></div>`;
 }
 
-function setSort(col, mod) {
+function setSort(col) {
   if (sortCol===col) sortDir*=-1; else { sortCol=col; sortDir=1; }
-  if (currentTab==='modul1') renderModuleTable('m1');
-  else if (currentTab==='modul2') renderModuleTable('m2');
+  renderView();
 }
 
-// ============================================================
-// BY JAWATAN — built from department data (no extra API needed)
-// Groups all depts to show compliance by jawatan category
-// ============================================================
+// BY JAWATAN TAB
 function renderByJawatan() {
   const el = document.getElementById('tab-byrole');
   if (!dashData) { el.innerHTML = '<div class="empty-msg">No data loaded.</div>'; return; }
 
-  // If jawatan data from Apps Script is available, use it
-  if (dashData.jawatan && Object.keys(dashData.jawatan).length > 0) {
-    renderJawatanFromAPI(el);
-  } else {
-    // Fallback: show department compliance table as jawatan proxy
-    renderJawatanFallback(el);
-  }
-}
-
-function renderJawatanFromAPI(el) {
+  const jaw = dashData.jawatan;
+  const hasJawatan = jaw && Object.keys(jaw).length > 0;
   const deptFilter = document.getElementById('filterDept').value;
   const searchVal = document.getElementById('searchInput').value.toLowerCase();
-  const jawatanList = Object.entries(dashData.jawatan)
+
+  if (!hasJawatan) {
+    // Fallback — department summary table
+    const depts = dashData.departments.filter(d => !searchVal || d.name.toLowerCase().includes(searchVal));
+    let html = `<div style="background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.25);
+      border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.78rem;color:var(--accent2)">
+      ℹ️ Apps Script requires redeployment with new Code.gs to show jawatan breakdown.
+      Showing department summary below.
+    </div>
+    <div class="table-wrap"><table>
+    <thead><tr><th>Department</th><th>Staff</th><th>M1 Submitted</th><th>M1 %</th>
+    <th>M2 Submitted</th><th>M2 %</th><th>Status</th></tr></thead><tbody>`;
+    depts.forEach((d,i) => {
+      const m1c = d.m1_pct>=80?'pct-high':d.m1_pct>=50?'pct-mid':'pct-low';
+      const m2c = d.m2_pct>=80?'pct-high':d.m2_pct>=50?'pct-mid':'pct-low';
+      const st = d.m1_pct>=100&&d.m2_pct>=100?'<span style="color:var(--green)">✓ Lengkap</span>'
+        :d.m1_pct>=80&&d.m2_pct>=80?'<span style="color:var(--yellow)">↑ On Track</span>'
+        :'<span style="color:var(--red)">⚠ Perlu Tindakan</span>';
+      html += `<tr><td><strong>${d.name}</strong></td><td>${d.denominator??'—'}</td>
+        <td>${d.m1_submitted}</td><td class="${m1c}">${d.m1_pct!==null?d.m1_pct+'%':'—'}</td>
+        <td>${d.m2_submitted}</td><td class="${m2c}">${d.m2_pct!==null?d.m2_pct+'%':'—'}</td>
+        <td>${st}</td></tr>`;
+    });
+    el.innerHTML = html + '</tbody></table></div>';
+    return;
+  }
+
+  // Full jawatan table — fix: access obj.m1_total and obj.m2_total correctly
+  const jawatanEntries = Object.entries(jaw)
     .filter(([j]) => !searchVal || j.toLowerCase().includes(searchVal))
     .sort((a,b) => a[0].localeCompare(b[0]));
 
-  if (!jawatanList.length) { el.innerHTML = '<div class="empty-msg">No jawatan found.</div>'; return; }
+  let html = `<p style="color:var(--text2);font-size:.78rem;margin-bottom:12px">
+    ${jawatanEntries.length} jawatan categories · Source: Column E (STANDARDIZED JAWATAN)
+    ${deptFilter !== 'all' ? ' · Filtered: <strong style="color:var(--text)">'+deptFilter+'</strong>' : ''}
+  </p>
+  <div class="table-wrap"><table>
+  <thead><tr>
+    <th style="min-width:220px">Standardized Jawatan</th>
+    <th>M1 Submitted</th><th>M2 Submitted</th><th>Top Departments (M1 / M2)</th>
+  </tr></thead><tbody>`;
 
-  let html = `<p style="color:var(--text2);font-size:.8rem;margin-bottom:12px">
-    ${jawatanList.length} standardized jawatan categories · Source: Column E (STANDARDIZED JAWATAN)</p>
-    <div class="table-wrap"><table>
-    <thead><tr>
-      <th style="min-width:240px">Standardized Jawatan</th>
-      <th>M1 Submitted</th><th>M2 Submitted</th><th>Top Departments (M1/M2)</th>
-    </tr></thead><tbody>`;
+  jawatanEntries.forEach(([jawatan, obj]) => {
+    // obj = { m1_total: N, m2_total: N, depts: { DEPT: {m1:N, m2:N} } }
+    let m1 = obj.m1_total || 0;
+    let m2 = obj.m2_total || 0;
 
-  for (const [jawatan, data] of jawatanList) {
-    let m1 = data.m1_total, m2 = data.m2_total;
-    if (deptFilter !== 'all' && data.depts[deptFilter]) {
-      m1 = data.depts[deptFilter].m1 || 0;
-      m2 = data.depts[deptFilter].m2 || 0;
+    // If dept filter active, show only that dept's count
+    if (deptFilter !== 'all') {
+      const deptObj = (obj.depts || {})[deptFilter];
+      m1 = deptObj ? (deptObj.m1 || 0) : 0;
+      m2 = deptObj ? (deptObj.m2 || 0) : 0;
     }
-    const topDepts = Object.entries(data.depts||{})
-      .sort((a,b)=>(b[1].m1+b[1].m2)-(a[1].m1+a[1].m2))
-      .slice(0,3)
-      .map(([d,v])=>`<span style="background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-size:.68rem;margin-right:3px">${d} (${v.m1||0}/${v.m2||0})</span>`)
+
+    // Top 3 departments for this jawatan
+    const topDepts = Object.entries(obj.depts || {})
+      .sort((a,b) => (b[1].m1+b[1].m2) - (a[1].m1+a[1].m2))
+      .slice(0, 3)
+      .map(([d,v]) => `<span class="tag">${d} (${v.m1||0}/${v.m2||0})</span>`)
       .join('');
-    html += `<tr><td><strong>${jawatan}</strong></td><td>${m1}</td><td>${m2}</td><td>${topDepts}</td></tr>`;
-  }
-  html += '</tbody></table></div>';
-  el.innerHTML = html;
-}
 
-function renderJawatanFallback(el) {
-  // Show all departments with both module compliance — useful proxy
-  const depts = dashData.departments;
-  const search = document.getElementById('searchInput').value.toLowerCase();
-  const filtered = depts.filter(d => !search || d.name.toLowerCase().includes(search));
-
-  let html = `
-    <div style="background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:.8rem;color:var(--accent2)">
-      ℹ️ Jawatan breakdown requires Apps Script redeployment with new Code.gs. 
-      Showing department compliance summary below. <strong>Redeploy Apps Script to enable full jawatan view.</strong>
-    </div>
-    <div class="table-wrap"><table>
-    <thead><tr>
-      <th>Department</th><th>Total Staff</th>
-      <th>M1 Submitted</th><th>M1 %</th>
-      <th>M2 Submitted</th><th>M2 %</th>
-      <th>Status</th>
-    </tr></thead><tbody>`;
-
-  filtered.forEach(d => {
-    const m1cls = d.m1_pct===null?'':(d.m1_pct>=80?'pct-high':d.m1_pct>=50?'pct-mid':'pct-low');
-    const m2cls = d.m2_pct===null?'':(d.m2_pct>=80?'pct-high':d.m2_pct>=50?'pct-mid':'pct-low');
-    const status = d.m1_pct>=100&&d.m2_pct>=100
-      ? '<span style="color:var(--green)">✓ Complete</span>'
-      : d.m1_pct>=80&&d.m2_pct>=80
-        ? '<span style="color:var(--yellow)">↑ On Track</span>'
-        : '<span style="color:var(--red)">⚠ Needs Attention</span>';
     html += `<tr>
-      <td><strong>${d.name}</strong></td>
-      <td>${d.denominator??'—'}</td>
-      <td>${d.m1_submitted}</td>
-      <td class="${m1cls}">${d.m1_pct!==null?d.m1_pct+'%':'—'}</td>
-      <td>${d.m2_submitted}</td>
-      <td class="${m2cls}">${d.m2_pct!==null?d.m2_pct+'%':'—'}</td>
-      <td>${status}</td>
+      <td><strong>${jawatan}</strong></td>
+      <td>${m1}</td><td>${m2}</td>
+      <td>${topDepts}</td>
     </tr>`;
   });
-  html += '</tbody></table></div>';
-  el.innerHTML = html;
+
+  el.innerHTML = html + '</tbody></table></div>';
 }
 
-// ============================================================
-// GENERATE REPORT
-// ============================================================
+// GENERATE REPORT — compact single page
 function generateReport() {
   if (!dashData) { alert('No data loaded. Please refresh first.'); return; }
   const deptKey = document.getElementById('reportDept').value;
-  const printArea = document.getElementById('printArea');
-  const now = new Date().toLocaleDateString('en-MY', {day:'2-digit',month:'long',year:'numeric'});
+  const now = new Date().toLocaleDateString('en-MY',{day:'2-digit',month:'long',year:'numeric'});
+  const time = new Date().toLocaleTimeString('en-MY',{hour:'2-digit',minute:'2-digit'});
   const s = dashData.summary;
 
-  let html = `
-    <div style="font-family:'Segoe UI',sans-serif;color:#111;max-width:900px;margin:0 auto;padding:20px">
-      <div style="text-align:center;border-bottom:3px solid #1e40af;padding-bottom:16px;margin-bottom:20px">
-        <h2 style="color:#1e40af;margin:0">LAPORAN PEMATUHAN LATIHAN IPC EPSA</h2>
-        <h3 style="color:#1e40af;margin:4px 0">Hospital Tengku Permaisuri Norashikin (HTPN)</h3>
-        <p style="margin:4px 0;font-size:.85rem">Unit Kawalan Infeksi (UKI) | Tarikh: ${now}</p>
-        ${deptKey==='all'?'<p style="font-size:.85rem;margin:4px 0">Laporan Keseluruhan Semua Jabatan</p>'
-          :'<p style="font-size:.85rem;margin:4px 0">Laporan Jabatan: <strong>'+dashData.departments.find(d=>d.key===deptKey)?.name+'</strong></p>'}
-      </div>`;
+  let html = `<style>
+    body{font-family:'Segoe UI',Arial,sans-serif;font-size:9pt;color:#111;margin:0;}
+    h2{font-size:12pt;color:#1e40af;margin:0 0 2px;}
+    h3{font-size:10pt;color:#1e40af;margin:0 0 2px;}
+    p{margin:2px 0;font-size:8pt;color:#555;}
+    table{width:100%;border-collapse:collapse;margin:6px 0;font-size:8.5pt;}
+    th{background:#1e40af;color:#fff;padding:5px 8px;text-align:left;font-size:8pt;}
+    td{padding:4px 8px;border:1px solid #ddd;}
+    tr:nth-child(even) td{background:#f0f4ff;}
+    .hdr{border-bottom:2px solid #1e40af;padding-bottom:6px;margin-bottom:8px;}
+    .badge{display:inline-block;padding:2px 6px;border-radius:3px;font-size:7.5pt;font-weight:700;}
+    .green{color:#059669;}.red{color:#dc2626;}.blue{color:#1e40af;}.amber{color:#d97706;}
+    .footer{border-top:1px solid #ddd;margin-top:8px;padding-top:4px;font-size:7pt;color:#999;text-align:center;}
+  </style>
+  <div class="hdr">
+    <h2>LAPORAN PEMATUHAN LATIHAN IPC EPSA</h2>
+    <h3>Hospital Tengku Permaisuri Norashikin (HTPN)</h3>
+    <p>Unit Kawalan Infeksi (UKI) &nbsp;|&nbsp; Tarikh: ${now} &nbsp;|&nbsp; Masa: ${time}</p>
+    <p>${deptKey==='all'?'Laporan Keseluruhan — Semua Jabatan':'Laporan Jabatan: <strong>'+dashData.departments.find(d=>d.key===deptKey)?.name+'</strong>'}</p>
+  </div>`;
 
   if (deptKey === 'all') {
-    // Summary report
-    html += `
-      <table style="width:100%;border-collapse:collapse;margin-bottom:20px">
-        <tr style="background:#1e40af;color:#fff">
-          <td colspan="6" style="padding:8px 12px;font-weight:700">RINGKASAN PEMATUHAN KESELURUHAN</td>
-        </tr>
-        <tr style="background:#eff6ff">
-          <td style="padding:8px 12px;border:1px solid #ddd">Modul 1 Overall</td>
-          <td style="padding:8px 12px;border:1px solid #ddd;font-weight:700;color:#1e40af">${s.overall_m1_pct}%</td>
-          <td style="padding:8px 12px;border:1px solid #ddd">M1 Submitted</td>
-          <td style="padding:8px 12px;border:1px solid #ddd">${s.m1_total_all||s.total_m1_submitted}</td>
-          <td style="padding:8px 12px;border:1px solid #ddd">M1 Remaining</td>
-          <td style="padding:8px 12px;border:1px solid #ddd;color:#dc2626">${s.m1_remaining}</td>
-        </tr>
-        <tr>
-          <td style="padding:8px 12px;border:1px solid #ddd">Modul 2 Overall</td>
-          <td style="padding:8px 12px;border:1px solid #ddd;font-weight:700;color:#059669">${s.overall_m2_pct}%</td>
-          <td style="padding:8px 12px;border:1px solid #ddd">M2 Submitted</td>
-          <td style="padding:8px 12px;border:1px solid #ddd">${s.m2_total_all||s.total_m2_submitted}</td>
-          <td style="padding:8px 12px;border:1px solid #ddd">M2 Remaining</td>
-          <td style="padding:8px 12px;border:1px solid #ddd;color:#dc2626">${s.m2_remaining}</td>
-        </tr>
-        <tr style="background:#eff6ff">
-          <td style="padding:8px 12px;border:1px solid #ddd">Jabatan ≥80%</td>
-          <td style="padding:8px 12px;border:1px solid #ddd;font-weight:700">${s.depts_on_track} jabatan</td>
-          <td style="padding:8px 12px;border:1px solid #ddd">Total Denominator</td>
-          <td style="padding:8px 12px;border:1px solid #ddd">${s.total_denominator} staf</td>
-          <td colspan="2" style="padding:8px 12px;border:1px solid #ddd"></td>
-        </tr>
-      </table>
-      <table style="width:100%;border-collapse:collapse">
-        <thead>
-          <tr style="background:#1e40af;color:#fff">
-            <th style="padding:8px 12px;text-align:left;border:1px solid #1e3a8a">Jabatan / Departmen</th>
-            <th style="padding:8px 12px;text-align:center;border:1px solid #1e3a8a">Denominator</th>
-            <th style="padding:8px 12px;text-align:center;border:1px solid #1e3a8a">M1 Submitted</th>
-            <th style="padding:8px 12px;text-align:center;border:1px solid #1e3a8a">M1 %</th>
-            <th style="padding:8px 12px;text-align:center;border:1px solid #1e3a8a">M2 Submitted</th>
-            <th style="padding:8px 12px;text-align:center;border:1px solid #1e3a8a">M2 %</th>
-            <th style="padding:8px 12px;text-align:center;border:1px solid #1e3a8a">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${dashData.departments.map((d,i) => {
-            const m1col = d.m1_pct===null?'#6b7280':d.m1_pct>=80?'#059669':d.m1_pct>=50?'#d97706':'#dc2626';
-            const m2col = d.m2_pct===null?'#6b7280':d.m2_pct>=80?'#059669':d.m2_pct>=50?'#d97706':'#dc2626';
-            const status = d.m1_pct>=100&&d.m2_pct>=100?'✓ Lengkap'
-              :d.m1_pct>=80&&d.m2_pct>=80?'↑ On Track':'⚠ Perlu Tindakan';
-            const statCol = d.m1_pct>=100&&d.m2_pct>=100?'#059669':d.m1_pct>=80&&d.m2_pct>=80?'#d97706':'#dc2626';
-            return `<tr style="background:${i%2===0?'#f8fafc':'#fff'}">
-              <td style="padding:7px 12px;border:1px solid #ddd;font-weight:600">${d.name}</td>
-              <td style="padding:7px 12px;border:1px solid #ddd;text-align:center">${d.denominator??'TBC'}</td>
-              <td style="padding:7px 12px;border:1px solid #ddd;text-align:center">${d.m1_submitted}</td>
-              <td style="padding:7px 12px;border:1px solid #ddd;text-align:center;font-weight:700;color:${m1col}">${d.m1_pct!==null?d.m1_pct+'%':'—'}</td>
-              <td style="padding:7px 12px;border:1px solid #ddd;text-align:center">${d.m2_submitted}</td>
-              <td style="padding:7px 12px;border:1px solid #ddd;text-align:center;font-weight:700;color:${m2col}">${d.m2_pct!==null?d.m2_pct+'%':'—'}</td>
-              <td style="padding:7px 12px;border:1px solid #ddd;text-align:center;color:${statCol};font-weight:600">${status}</td>
-            </tr>`;
-          }).join('')}
-        </tbody>
+    html += `<table>
+      <tr><th colspan="2" style="background:#1e3a8a">RINGKASAN KESELURUHAN</th>
+        <th colspan="2" style="background:#1e3a8a">STATISTIK</th></tr>
+      <tr><td>M1 Pematuhan Keseluruhan</td><td class="blue" style="font-weight:700">${s.overall_m1_pct}%</td>
+        <td>Jumlah Denominator</td><td>${s.total_denominator} staf</td></tr>
+      <tr><td>M2 Pematuhan Keseluruhan</td><td class="green" style="font-weight:700">${s.overall_m2_pct}%</td>
+        <td>Jabatan ≥80% (On Track)</td><td>${s.depts_on_track} jabatan</td></tr>
+      <tr><td>M1 Baki Belum Submit</td><td class="red">${s.m1_remaining} staf</td>
+        <td>M2 Baki Belum Submit</td><td class="red">${s.m2_remaining} staf</td></tr>
+    </table>
+    <table>
+      <tr><th>Jabatan</th><th>Staf</th><th>M1 Submit</th><th>M1 %</th>
+        <th>M2 Submit</th><th>M2 %</th><th>Status</th></tr>
+      ${dashData.departments.map(d => {
+        const m1c = d.m1_pct>=80?'green':d.m1_pct>=50?'amber':'red';
+        const m2c = d.m2_pct>=80?'green':d.m2_pct>=50?'amber':'red';
+        const st = d.m1_pct>=100&&d.m2_pct>=100?'✓ Lengkap'
+          :d.m1_pct>=80&&d.m2_pct>=80?'↑ On Track':'⚠ Tindakan';
+        const stc = d.m1_pct>=100&&d.m2_pct>=100?'green':d.m1_pct>=80&&d.m2_pct>=80?'amber':'red';
+        return `<tr><td><strong>${d.name}</strong></td>
+          <td>${d.denominator??'TBC'}</td>
+          <td>${d.m1_submitted}</td>
+          <td class="${m1c}" style="font-weight:700">${d.m1_pct!==null?d.m1_pct+'%':'—'}</td>
+          <td>${d.m2_submitted}</td>
+          <td class="${m2c}" style="font-weight:700">${d.m2_pct!==null?d.m2_pct+'%':'—'}</td>
+          <td class="${stc}" style="font-weight:600">${st}</td></tr>`;
+      }).join('')}
+    </table>`;
+
+    // Add jawatan breakdown if available
+    if (dashData.jawatan && Object.keys(dashData.jawatan).length > 0) {
+      html += `<table style="margin-top:8px">
+        <tr><th colspan="3" style="background:#1e3a8a">PECAHAN MENGIKUT JAWATAN (STANDARDIZED)</th></tr>
+        <tr><th>Jawatan</th><th>M1 Submitted</th><th>M2 Submitted</th></tr>
+        ${Object.entries(dashData.jawatan).sort((a,b)=>a[0].localeCompare(b[0])).map(([j,obj])=>
+          `<tr><td>${j}</td><td>${obj.m1_total||0}</td><td>${obj.m2_total||0}</td></tr>`
+        ).join('')}
       </table>`;
+    }
   } else {
-    // Single department report
     const d = dashData.departments.find(x => x.key === deptKey);
-    if (!d) { alert('Department not found.'); return; }
-    html += `
-      <table style="width:100%;border-collapse:collapse;margin-bottom:20px">
-        <tr style="background:#1e40af;color:#fff">
-          <td colspan="4" style="padding:8px 12px;font-weight:700">${d.name.toUpperCase()} — RINGKASAN PEMATUHAN</td>
-        </tr>
-        <tr style="background:#eff6ff">
-          <td style="padding:10px 12px;border:1px solid #ddd;width:25%">Jumlah Staf (Denominator)</td>
-          <td style="padding:10px 12px;border:1px solid #ddd;font-weight:700">${d.denominator??'TBC'}</td>
-          <td style="padding:10px 12px;border:1px solid #ddd;width:25%">Status Keseluruhan</td>
-          <td style="padding:10px 12px;border:1px solid #ddd;font-weight:700;color:${d.m1_pct>=80&&d.m2_pct>=80?'#059669':'#dc2626'}">
-            ${d.m1_pct>=80&&d.m2_pct>=80?'✓ On Track':'⚠ Perlu Tindakan'}
-          </td>
-        </tr>
-        <tr>
-          <td style="padding:10px 12px;border:1px solid #ddd">Modul 1 — Pengenalan IPC</td>
-          <td style="padding:10px 12px;border:1px solid #ddd">
-            <span style="font-size:1.3rem;font-weight:700;color:${d.m1_pct>=80?'#059669':d.m1_pct>=50?'#d97706':'#dc2626'}">${d.m1_pct!==null?d.m1_pct+'%':'—'}</span>
-            &nbsp; (${d.m1_submitted} / ${d.denominator??'?'} staf)
-          </td>
-          <td style="padding:10px 12px;border:1px solid #ddd">Tempoh Modul 1</td>
-          <td style="padding:10px 12px;border:1px solid #ddd">Januari – Mac 2026</td>
-        </tr>
-        <tr style="background:#eff6ff">
-          <td style="padding:10px 12px;border:1px solid #ddd">Modul 2 — Kebersihan Tangan</td>
-          <td style="padding:10px 12px;border:1px solid #ddd">
-            <span style="font-size:1.3rem;font-weight:700;color:${d.m2_pct>=80?'#059669':d.m2_pct>=50?'#d97706':'#dc2626'}">${d.m2_pct!==null?d.m2_pct+'%':'—'}</span>
-            &nbsp; (${d.m2_submitted} / ${d.denominator??'?'} staf)
-          </td>
-          <td style="padding:10px 12px;border:1px solid #ddd">Tempoh Modul 2</td>
-          <td style="padding:10px 12px;border:1px solid #ddd">April – Jun 2026</td>
-        </tr>
-        <tr>
-          <td style="padding:10px 12px;border:1px solid #ddd">M1 Baki (Belum Submit)</td>
-          <td style="padding:10px 12px;border:1px solid #ddd;color:#dc2626;font-weight:700">${d.m1_remaining??'—'} staf</td>
-          <td style="padding:10px 12px;border:1px solid #ddd">M2 Baki (Belum Submit)</td>
-          <td style="padding:10px 12px;border:1px solid #ddd;color:#dc2626;font-weight:700">${d.m2_remaining??'—'} staf</td>
-        </tr>
-      </table>
-      <div style="background:#fefce8;border:1px solid #fbbf24;border-radius:6px;padding:12px 16px;font-size:.85rem">
-        <strong>Nota:</strong> Data dikemaskini secara masa nyata dari Google Sheet Masterlist EPSA HTPN.
-        Laporan ini dijana pada ${now} jam ${new Date().toLocaleTimeString('en-MY',{hour:'2-digit',minute:'2-digit'})}.
-        ${d.m1_remaining>0||d.m2_remaining>0
-          ? `<br><strong style="color:#dc2626">Tindakan diperlukan:</strong> ${d.m1_remaining>0?d.m1_remaining+' staf belum submit Modul 1. ':''} ${d.m2_remaining>0?d.m2_remaining+' staf belum submit Modul 2.':''}`
-          : '<br><span style="color:#059669">✓ Semua staf telah melengkapkan kedua-dua modul.</span>'}
-      </div>`;
+    if (!d) { alert('Department not found'); return; }
+    const m1c = d.m1_pct>=80?'green':d.m1_pct>=50?'amber':'red';
+    const m2c = d.m2_pct>=80?'green':d.m2_pct>=50?'amber':'red';
+    html += `<table>
+      <tr><th colspan="4" style="background:#1e3a8a">${d.name.toUpperCase()} — RINGKASAN PEMATUHAN</th></tr>
+      <tr><td style="width:28%">Jumlah Staf (Denominator)</td>
+        <td style="font-weight:700">${d.denominator??'TBC'}</td>
+        <td style="width:28%">Status Keseluruhan</td>
+        <td style="font-weight:700" class="${d.m1_pct>=80&&d.m2_pct>=80?'green':'red'}">
+          ${d.m1_pct>=80&&d.m2_pct>=80?'✓ On Track':'⚠ Perlu Tindakan'}</td></tr>
+      <tr><td>Modul 1 — Pengenalan IPC (Jan–Mac 2026)</td>
+        <td><span class="${m1c}" style="font-size:11pt;font-weight:700">${d.m1_pct!==null?d.m1_pct+'%':'—'}</span>
+          &nbsp;(${d.m1_submitted}/${d.denominator??'?'} staf)</td>
+        <td>M1 Baki Belum Submit</td>
+        <td class="red" style="font-weight:700">${d.m1_remaining??'—'} staf</td></tr>
+      <tr><td>Modul 2 — Kebersihan Tangan (Apr–Jun 2026)</td>
+        <td><span class="${m2c}" style="font-size:11pt;font-weight:700">${d.m2_pct!==null?d.m2_pct+'%':'—'}</span>
+          &nbsp;(${d.m2_submitted}/${d.denominator??'?'} staf)</td>
+        <td>M2 Baki Belum Submit</td>
+        <td class="red" style="font-weight:700">${d.m2_remaining??'—'} staf</td></tr>
+    </table>`;
+
+    // Jawatan breakdown for this department
+    if (dashData.jawatan && Object.keys(dashData.jawatan).length > 0) {
+      const deptJaw = Object.entries(dashData.jawatan)
+        .filter(([j,obj]) => obj.depts && obj.depts[deptKey])
+        .sort((a,b) => a[0].localeCompare(b[0]));
+      if (deptJaw.length > 0) {
+        html += `<table style="margin-top:6px">
+          <tr><th colspan="3" style="background:#1e3a8a">PECAHAN MENGIKUT JAWATAN — ${d.name.toUpperCase()}</th></tr>
+          <tr><th>Jawatan</th><th>M1 Submitted</th><th>M2 Submitted</th></tr>
+          ${deptJaw.map(([j,obj]) => {
+            const dv = obj.depts[deptKey];
+            return `<tr><td>${j}</td><td>${dv.m1||0}</td><td>${dv.m2||0}</td></tr>`;
+          }).join('')}
+        </table>`;
+      }
+    }
+
+    html += `<div style="background:#fefce8;border:1px solid #fbbf24;border-radius:4px;
+      padding:6px 10px;margin-top:6px;font-size:7.5pt">
+      <strong>Nota:</strong> Data masa nyata dari Google Sheet Masterlist EPSA HTPN.
+      ${d.m1_remaining>0||d.m2_remaining>0
+        ? `<span style="color:#dc2626;font-weight:700"> Tindakan diperlukan: `
+          + (d.m1_remaining>0?d.m1_remaining+' staf belum submit M1. ':'')
+          + (d.m2_remaining>0?d.m2_remaining+' staf belum submit M2.':'')+'</span>'
+        : '<span style="color:#059669;font-weight:700"> ✓ Semua staf telah lengkap.</span>'}
+    </div>`;
   }
 
-  html += `<div style="margin-top:30px;border-top:1px solid #ddd;padding-top:12px;font-size:.75rem;color:#6b7280;text-align:center">
-    EPSA IPC Training Dashboard — HTPN | Unit Kawalan Infeksi | Dijana: ${now}
-  </div></div>`;
+  html += `<div class="footer">EPSA IPC Training Dashboard — HTPN | Unit Kawalan Infeksi | Dijana: ${now} ${time}</div>`;
 
+  const printArea = document.getElementById('printArea');
   printArea.innerHTML = html;
   window.print();
 }

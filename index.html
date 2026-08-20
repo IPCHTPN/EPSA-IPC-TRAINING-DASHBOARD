@@ -130,7 +130,9 @@
   <div class="status-bar no-print">
     <span id="statusText">Loading…</span>
     <span id="lastUpdated"></span>
+    <span id="jawatanCount" style="color:var(--text2);font-size:.75rem"></span>
     <button class="btn" id="refreshBtn" onclick="loadData()" disabled>↻ Refresh</button>
+    <button class="btn" style="background:var(--card2);border:1px solid var(--border)" onclick="resetUrl()">⚙ Change URL</button>
   </div>
 
   <div class="kpi-grid">
@@ -258,6 +260,8 @@ async function loadData() {
       'Updated: ' + ts.toLocaleDateString('en-MY') + ' ' +
       ts.toLocaleTimeString('en-MY',{hour:'2-digit',minute:'2-digit'});
     document.getElementById('statusText').textContent = 'Live data loaded ✓';
+    const jawCount = dashData.jawatan ? Object.keys(dashData.jawatan).length : 0;
+    document.getElementById('jawatanCount').textContent = jawCount > 0 ? `${jawCount} jawatan categories` : '⚠ No jawatan data';
     updateKPIs();
     populateFilters();
     renderView();
@@ -299,14 +303,20 @@ function populateFilters() {
     repDept.innerHTML += `<option value="${d.key}">${d.name}</option>`;
   });
 
-  // Jawatan filter — populate from jawatan data
+  // Jawatan filter — populate from API data or hardcoded standardized list
   const selJaw = document.getElementById('filterJawatan');
   selJaw.innerHTML = '<option value="all">All Roles</option>';
-  if (dashData.jawatan && Object.keys(dashData.jawatan).length > 0) {
-    Object.keys(dashData.jawatan).sort().forEach(j => {
-      selJaw.innerHTML += `<option value="${j}">${j}</option>`;
-    });
-  }
+  const jawKeys = (dashData.jawatan && Object.keys(dashData.jawatan).length > 0)
+    ? Object.keys(dashData.jawatan).filter(j => (dashData.jawatan[j].m1_total||0)+(dashData.jawatan[j].m2_total||0)>0).sort()
+    : ["DOKTOR","JURURAWAT","JURURAWAT TERLATIH","JURURAWAT KLINIKAL","PEGAWAI PERUBATAN",
+       "PEMBANTU PERAWATAN PESAKIT","PEMBANTU PERUBATAN","PEGAWAI DIETETIK",
+       "PEGAWAI PENYEDIAAN MAKANAN","PEMBANTU PENYEDIAAN MAKANAN","JURUPULIH PERUBATAN FISIOTERAPI",
+       "JURUPULIH PERUBATAN CARA KERJA","PEGAWAI FARMASI","PEMBANTU FARMASI",
+       "JURUTEKNOLOGI MAKMAL PERUBATAN","PEMBANTU JURUTEKNOLOGI MAKMAL PERUBATAN",
+       "RADIOGRAFER","PEGAWAI SAINS","LAIN-LAIN"];
+  jawKeys.forEach(j => {
+    selJaw.innerHTML += `<option value="${j}">${j}</option>`;
+  });
 }
 
 function getFilteredDepts() {
@@ -521,6 +531,13 @@ function renderByJawatan() {
 }
 
 // GENERATE REPORT — compact single page
+function resetUrl() {
+  localStorage.removeItem('epsa_apps_script_url');
+  APPS_SCRIPT_URL = '';
+  document.getElementById('configNotice').classList.add('show');
+  document.getElementById('statusText').textContent = 'Enter new Apps Script URL';
+}
+
 function generateReport() {
   if (!dashData) { alert('No data loaded. Please refresh first.'); return; }
   const deptKey = document.getElementById('reportDept').value;

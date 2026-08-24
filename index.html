@@ -63,8 +63,8 @@
   .dept-card:hover{transform:translateY(-2px);border-color:var(--accent);}
   .dept-card.complete{border-color:rgba(16,185,129,.4);}
   .dept-card.pending-denom{border-color:rgba(245,158,11,.3);}
-  .dept-name{font-weight:600;font-size:.92rem;margin-bottom:3px;}
-  .dept-denom{font-size:.72rem;color:var(--text2);margin-bottom:10px;}
+  .dept-name{font-weight:600;font-size:.92rem;margin-bottom:3px;color:var(--text);}
+  .dept-denom{font-size:.72rem;color:var(--text2);margin-bottom:10px;display:block;}
   .module-row{margin-bottom:7px;}
   .module-label{display:flex;justify-content:space-between;font-size:.74rem;color:var(--text2);margin-bottom:3px;}
   .module-label .pct{font-weight:700;}
@@ -378,17 +378,19 @@ function renderOverview() {
 
     const cls = d.pending_denominator ? 'pending-denom' : (!jawatanLabel && d.m1_pct >= 100 && d.m2_pct >= 100 ? 'complete' : '');
     return `<div class="dept-card ${cls}">
-      <div class="dept-name">${d.name}</div>
-      <div class="dept-denom">${d.pending_denominator ? '⏳ Denominator pending' : d.denominator+' staff'}</div>
+      <div class="dept-name" style="color:#e2e8f0;font-weight:700">${d.name}</div>
+      <div class="dept-denom" style="color:#94a3b8;font-size:.72rem;margin-bottom:10px">${d.pending_denominator ? '⏳ Denominator pending' : d.denominator+' staff'}</div>
       ${jawatanLabel}
       <div class="module-row">
-        <div class="module-label"><span>Modul 1 &nbsp;<small>${m1sub} submitted</small></span>
-          <span class="pct">${m1pct !== null ? m1pct+'%' : ''}</span></div>
+        <div class="module-label" style="display:flex;justify-content:space-between;font-size:.74rem;color:#94a3b8;margin-bottom:3px">
+          <span>Modul 1 &nbsp;<small>${m1sub} submitted</small></span>
+          <span style="font-weight:700;color:#e2e8f0">${m1pct !== null ? m1pct+'%' : ''}</span></div>
         <div class="bar-bg"><div class="bar-fill bar-m1" style="width:${m1pct??0}%"></div></div>
       </div>
       <div class="module-row">
-        <div class="module-label"><span>Modul 2 &nbsp;<small>${m2sub} submitted</small></span>
-          <span class="pct">${m2pct !== null ? m2pct+'%' : ''}</span></div>
+        <div class="module-label" style="display:flex;justify-content:space-between;font-size:.74rem;color:#94a3b8;margin-bottom:3px">
+          <span>Modul 2 &nbsp;<small>${m2sub} submitted</small></span>
+          <span style="font-weight:700;color:#e2e8f0">${m2pct !== null ? m2pct+'%' : ''}</span></div>
         <div class="bar-bg"><div class="bar-fill bar-m2" style="width:${m2pct??0}%"></div></div>
       </div>
     </div>`;
@@ -550,15 +552,23 @@ function generateReport() {
     body{font-family:'Segoe UI',Arial,sans-serif;font-size:9pt;color:#111;margin:0;}
     h2{font-size:12pt;color:#1e40af;margin:0 0 2px;}
     h3{font-size:10pt;color:#1e40af;margin:0 0 2px;}
-    p{margin:2px 0;font-size:8pt;color:#555;}
+    p{margin:2px 0;font-size:8pt;color:#444;}
     table{width:100%;border-collapse:collapse;margin:6px 0;font-size:8.5pt;}
-    th{background:#1e40af;color:#fff;padding:5px 8px;text-align:left;font-size:8pt;}
-    td{padding:4px 8px;border:1px solid #ddd;}
-    tr:nth-child(even) td{background:#f0f4ff;}
+    th{background:#1e40af;color:#fff !important;padding:5px 8px;text-align:left;font-size:8pt;}
+    td{padding:4px 8px;border:1px solid #bbb;color:#111 !important;}
+    tr:nth-child(even) td{background:#eef2ff;color:#111 !important;}
+    tr:nth-child(odd) td{background:#fff;color:#111 !important;}
     .hdr{border-bottom:2px solid #1e40af;padding-bottom:6px;margin-bottom:8px;}
-    .badge{display:inline-block;padding:2px 6px;border-radius:3px;font-size:7.5pt;font-weight:700;}
-    .green{color:#059669;}.red{color:#dc2626;}.blue{color:#1e40af;}.amber{color:#d97706;}
-    .footer{border-top:1px solid #ddd;margin-top:8px;padding-top:4px;font-size:7pt;color:#999;text-align:center;}
+    .green{color:#059669 !important;font-weight:700;}
+    .red{color:#dc2626 !important;font-weight:700;}
+    .blue{color:#1e40af !important;font-weight:700;}
+    .amber{color:#d97706 !important;font-weight:700;}
+    .footer{border-top:1px solid #ddd;margin-top:8px;padding-top:4px;font-size:7pt;color:#666;text-align:center;}
+    @media print{
+      *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
+      td{color:#111 !important;}
+      th{background:#1e40af !important;color:#fff !important;}
+    }
   </style>
   <div class="hdr">
     <h2>LAPORAN PEMATUHAN LATIHAN IPC EPSA</h2>
@@ -614,7 +624,7 @@ function generateReport() {
     const m2c = d.m2_pct>=80?'green':d.m2_pct>=50?'amber':'red';
     html += `<table>
       <tr><th colspan="4" style="background:#1e3a8a">${d.name.toUpperCase()} — RINGKASAN PEMATUHAN</th></tr>
-      <tr><td style="width:28%">Jumlah Staf (Denominator)</td>
+      <tr><td style="width:28%;color:#111;font-weight:600">Jumlah Staf (Denominator)</td>
         <td style="font-weight:700">${d.denominator??'TBC'}</td>
         <td style="width:28%">Status Keseluruhan</td>
         <td style="font-weight:700" class="${d.m1_pct>=80&&d.m2_pct>=80?'green':'red'}">
